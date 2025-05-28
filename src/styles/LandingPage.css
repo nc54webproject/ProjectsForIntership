@@ -1,0 +1,144 @@
+.LandingPage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.LandingHeader {
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.143);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.LandingPage button {
+  padding: 8px 14px;
+  border-radius: 12px;
+  background-color: rgba(51, 150, 204, 0.161);
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.LandingContainer {
+  flex: 1;
+  padding: 2rem 15%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.container-welcome {
+  width: 100%;
+  height: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: linear-gradient(
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.6) 100%
+    ),
+    url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkl2P-X5a-3JGlfsWja59Dcw38QzLDdpCvJQriUseSeO2phIMlS5s97dfHRta7vZi_MB9vIarrVCiZxEAVZRTGXn2Geps3-zw4i4dgMdu19gMtiPjQd_vTOq2inwTa0RILGUxPoKCxxyUOlgy0Wd5JfrpRPYccC_vBaRqOCtBW2wAerPVvONcBU8IuEr5kwq01Qr5ILWToZpQTq6fX8nGx8WTbVhlF09KGK9Za8kex-2gduIG0OqqwsDfF_uauRgggIfHKDx4ztug");
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3rem;
+  text-align: center;
+  gap: 1.5rem;
+  color: white;
+}
+
+.container-welcome h1 {
+  font-size: 3rem;
+  font-weight: 1000;
+}
+
+.container-welcome button {
+  background-color: rgba(51, 150, 204, 0.8);
+  padding: 12px;
+  color: white;
+  font-weight: bolder;
+}
+
+.key-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.key-features h1 {
+  font-weight: 900;
+}
+
+.key-feature-items {
+  border: 1px solid rgba(0, 0, 0, 0.267);
+  flex: 1;
+  border-radius: 12px;
+  display: flex;
+  padding: 1.5rem 1rem;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.key-feature-items span {
+  font-weight: bold;
+}
+
+.key-feature-items p {
+  color: rgba(83, 136, 157, 0.824);
+}
+
+.GettingStarted {
+  height: 100vh;
+  display: flex;
+}
+
+.GettingStartedCard {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+  /* gap: 3rem; */
+}
+
+.GettingStartedCard h1 {
+  margin-top: 3rem;
+  font-size: 4rem;
+  font-weight: bolder;
+}
+
+.loginCard {
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  background-color: #fff;
+  box-shadow: -6px 12px 12px -4px rgba(0, 0, 0, 0.3);
+}
+.loginCardFeature {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loginCardFeature p {
+  margin-bottom: 1rem;
+}
+
+.loginCardFeature span {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.LogoCard {
+  overflow: hidden;
+}
+
+.LoginImage {
+  background-size: cover;
+}

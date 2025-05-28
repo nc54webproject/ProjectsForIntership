@@ -1,24 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import CreateAccount from "./pages/CreateAccount";
+import GettingStarded from "./pages/GettingStarded";
+import Dashbaord from "./pages/Dashbaord";
+import LandingPage from "./pages/LandingPage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./AuthContext";
+import { ProtectedRoute, GuestRoute } from "./ProtectedRoute";
+import NodeFlowEdit from "./pages/NodeFlowEdit";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <AuthProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <GuestRoute>
+                <LandingPage />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <GettingStarded />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <GuestRoute>
+                <CreateAccount />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashbaord />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/webchat/:id"
+            element={
+              <ProtectedRoute>
+                <NodeFlowEdit />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
+    </>
   );
 }
 
