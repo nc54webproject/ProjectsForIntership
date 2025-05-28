@@ -626,7 +626,6 @@ function NodeFlowEdit() {
   }
 
   const getBezierPath = (start, end, sourceHandle) => {
-    const midY = (start.y + end.y) / 2
     let cp1x, cp1y, cp2x, cp2y
 
     if (sourceHandle === "true" || sourceHandle === "false") {
