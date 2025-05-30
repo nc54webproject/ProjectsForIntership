@@ -6,7 +6,9 @@ import LandingPage from "./pages/LandingPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
 import { ProtectedRoute, GuestRoute } from "./ProtectedRoute";
-import NodeFlowEdit from "./pages/NodeFlowEdit";
+// import NodeFlowEdit from "./pages/NodeFlowEdit";
+import NodeFlowEditor from "./pages/NodeFlowEditor";
+
 
 function App() {
   return (
@@ -50,7 +52,7 @@ function App() {
             path="/webchat/:id"
             element={
               <ProtectedRoute>
-                <NodeFlowEdit />
+                <NodeFlowEditor />
               </ProtectedRoute>
             }
           />

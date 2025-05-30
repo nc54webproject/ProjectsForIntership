@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState, useCallback, useRef } from "react"
 import "../styles/NodeFlowEditor.css"
 import { ArrowLeft, HelpCircle as CircleHelp, Clock4, GitBranch, Lightbulb, MessageSquare, Save, Settings, Zap, Plus, Trash2 } from "lucide-react"
