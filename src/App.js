@@ -16,7 +16,7 @@ function App() {
       <AuthProvider>
       <Router>
         <Routes>
-          <Route
+          <Route 
             path="/"
             element={
               <GuestRoute>

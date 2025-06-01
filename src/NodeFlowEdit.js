@@ -3,7 +3,7 @@ import "../styles/NodeFlowEditor.css"
 import { ArrowLeft, HelpCircle as CircleHelp, Clock4, GitBranch, Lightbulb, MessageSquare, Save, Settings, Zap, Plus, Trash2 } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
-import { db } from "../firebase"
+import { db } from "./firebase"
 
 // Node component for rendering individual nodes
 const FlowNode = ({
