@@ -71,8 +71,13 @@ const ReactFlowWrapper = ({
         }}
         deleteKeyCode={["Backspace", "Delete"]}
         multiSelectionKeyCode={["Meta", "Ctrl"]}
-        panOnScrollxq
-        selectionOnDrag
+        panOnScroll={true}
+        panOnScrollMode="free"
+        panOnDrag={true}
+        selectionOnDrag={true}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
+        zoomOnDoubleClick={true}
         panOnDrag={[1, 2]}
         selectionMode="partial"
       >
