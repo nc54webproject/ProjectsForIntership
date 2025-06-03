@@ -15,11 +15,14 @@ export const useNodeFlow = () => {
           label: "Welcome Message",
           message: "Hello! Welcome to our chatbot. How can I help you today?",
         },
+        deletable: true,
+        selectable: true,
       },
     ],
-    [],
+    []
   )
 
+  // ReactFlow state management
   const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -59,21 +62,21 @@ export const useNodeFlow = () => {
         type,
         position,
         data: getDefaultNodeData(type),
+        deletable: true,
+        selectable: true,
       }
       setNodes((nds) => [...nds, newNode])
     },
-    [setNodes],
+    [setNodes]
   )
 
   const updateNodeData = useCallback(
     (nodeId, newData) => {
       setNodes((nds) =>
-        nds.map((node) =>
-          node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node,
-        ),
+        nds.map((node) => (node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node))
       )
     },
-    [setNodes],
+    [setNodes]
   )
 
   const deleteNode = useCallback(
@@ -81,13 +84,19 @@ export const useNodeFlow = () => {
       setNodes((nds) => nds.filter((node) => node.id !== nodeId))
       setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId))
     },
-    [setNodes, setEdges],
+    [setNodes, setEdges]
   )
 
   const onConnect = useCallback(
     (params) => {
       console.log("Connection params:", params)
 
+      // Prevent self-connections
+      if (params.source === params.target) {
+        return
+      }
+
+      // Create edge with custom styling based on source handle
       let edgeStyle = {}
       let edgeLabel = ""
 
@@ -98,6 +107,7 @@ export const useNodeFlow = () => {
         edgeStyle = { stroke: "#ef4444", strokeWidth: 2 }
         edgeLabel = "FALSE"
       } else if (params.sourceHandle?.startsWith("route-")) {
+        // For router handles, use different colors
         const routeIndex = parseInt(params.sourceHandle.split("-")[1])
         const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#06b6d4"]
         edgeStyle = { stroke: colors[routeIndex % colors.length], strokeWidth: 2 }
@@ -120,11 +130,13 @@ export const useNodeFlow = () => {
           fill: "white",
           fillOpacity: 0.8,
         },
+        deletable: true,
+        selectable: true,
       }
 
       setEdges((eds) => addEdge(newEdge, eds))
     },
-    [setEdges],
+    [setEdges]
   )
 
   return {
