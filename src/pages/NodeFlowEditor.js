@@ -238,7 +238,8 @@ function NodeFlowEdit() {
     }
 
     if (id) {
-      fetchBot()
+      // Use void operator to prevent returning the Promise
+      void fetchBot()
     }
   }, [id, navigate, setNodes, setEdges, defaultNodes, loadFlow, getFlowStats])
 
@@ -254,11 +255,15 @@ function NodeFlowEdit() {
     }
   }, [nodes, edges, lastSavedData, isLoading, getFlowStats])
 
-  // Auto-save functionality (optional)
+  // Auto-save functionality
   useEffect(() => {
     if (!isLoading && hasUnsavedChanges) {
-      const cleanup = autoSave(nodes, edges, 30000) // Auto-save every 30 seconds
-      return cleanup
+      const timer = autoSave(nodes, edges, 30000) // Auto-save every 30 seconds
+      return () => {
+        if (timer) {
+          clearTimeout(timer)
+        }
+      }
     }
   }, [nodes, edges, hasUnsavedChanges, isLoading, autoSave])
 
