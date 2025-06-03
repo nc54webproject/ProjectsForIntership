@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useEffect, useState, useCallback, useRef } from "react"
 import { ReactFlow, MiniMap, Controls, Background, BackgroundVariant, Panel, ReactFlowProvider } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
@@ -149,7 +147,7 @@ function NodeFlowEdit() {
   const [selectedNode, setSelectedNode] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [lastSavedData, setLastSavedData] = useState({ nodes: [], edges: [] })
+  const [lastSavedData, setLastSavedData] = useState(null)
   const [showChatbotTester, setShowChatbotTester] = useState(false)
   const [flowStats, setFlowStats] = useState(null)
 
@@ -192,35 +190,22 @@ function NodeFlowEdit() {
           const data = docSnap.data()
           setChatbot(data)
 
-          // Load flow data using the new hook
           try {
             const flowData = await loadFlow()
             if (flowData && flowData.nodes && flowData.edges) {
               console.log("Loading existing flow data:", flowData)
               setNodes(flowData.nodes)
               setEdges(flowData.edges)
-              setLastSavedData({
-                nodes: flowData.nodes,
-                edges: flowData.edges,
-              })
-
-              // Update flow stats
+              setLastSavedData(JSON.stringify({ nodes: flowData.nodes, edges: flowData.edges }))
               setFlowStats(getFlowStats(flowData.nodes, flowData.edges))
             } else {
               console.log("No existing flow data, using default nodes")
-              setLastSavedData({
-                nodes: defaultNodes,
-                edges: [],
-              })
+              setLastSavedData(JSON.stringify({ nodes: defaultNodes, edges: [] }))
               setFlowStats(getFlowStats(defaultNodes, []))
             }
           } catch (flowError) {
             console.error("Error loading flow data:", flowError)
-            // Use default nodes if flow loading fails
-            setLastSavedData({
-              nodes: defaultNodes,
-              edges: [],
-            })
+            setLastSavedData(JSON.stringify({ nodes: defaultNodes, edges: [] }))
             setFlowStats(getFlowStats(defaultNodes, []))
           }
         } else {
@@ -238,19 +223,15 @@ function NodeFlowEdit() {
     }
 
     if (id) {
-      // Use void operator to prevent returning the Promise
       void fetchBot()
     }
   }, [id, navigate, setNodes, setEdges, defaultNodes, loadFlow, getFlowStats])
 
   // Track unsaved changes and update flow stats
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && lastSavedData) {
       const currentData = JSON.stringify({ nodes, edges })
-      const savedData = JSON.stringify({ nodes: lastSavedData.nodes, edges: lastSavedData.edges })
-      setHasUnsavedChanges(currentData !== savedData)
-
-      // Update flow stats
+      setHasUnsavedChanges(currentData !== lastSavedData)
       setFlowStats(getFlowStats(nodes, edges))
     }
   }, [nodes, edges, lastSavedData, isLoading, getFlowStats])
@@ -345,11 +326,10 @@ function NodeFlowEdit() {
       })
 
       if (success) {
-        // Update local state
-        setLastSavedData({ nodes, edges })
+        setLastSavedData(JSON.stringify({ nodes, edges }))
+        setHasUnsavedChanges(false)
         console.log("Flow saved successfully with all data!")
       } else {
-        // Show validation errors if any
         if (validationErrors.length > 0) {
           alert("Validation errors:\n" + validationErrors.join("\n"))
         } else {
