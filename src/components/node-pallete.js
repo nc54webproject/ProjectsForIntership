@@ -1,5 +1,15 @@
+"use client";
+
 import React from "react";
-import { Zap, MessageSquare, CircleHelp, GitBranch, Clock4, Lightbulb } from "lucide-react";
+import {
+  Zap,
+  MessageSquare,
+  CircleHelp,
+  GitBranch,
+  XCircle,
+  Route,
+  Lightbulb,
+} from "lucide-react";
 
 export const NodePalette = ({ onDragStart, onNodeClick }) => {
   return (
@@ -37,6 +47,19 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
         </div>
 
         <div
+          className="palette-item router"
+          draggable
+          onDragStart={(e) => onDragStart(e, "router")}
+          onClick={() => onNodeClick("router")}
+        >
+          <Route />
+          <div className="palette-item-content">
+            <h3>Router</h3>
+            <p>Branch to multiple paths based on selection</p>
+          </div>
+        </div>
+
+        <div
           className="palette-item conditional"
           draggable
           onDragStart={(e) => onDragStart(e, "conditional")}
@@ -45,27 +68,30 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <GitBranch />
           <div className="palette-item-content">
             <h3>Condition</h3>
-            <p>Branch the flow based on the condition</p>
+            <p>Simple true/false branching logic</p>
           </div>
         </div>
 
         <div
-          className="palette-item delay"
+          className="palette-item end-chat"
           draggable
-          onDragStart={(e) => onDragStart(e, "delay")}
-          onClick={() => onNodeClick("delay")}
+          onDragStart={(e) => onDragStart(e, "endChat")}
+          onClick={() => onNodeClick("endChat")}
         >
-          <Clock4 />
+          <XCircle />
           <div className="palette-item-content">
-            <h3>Delay</h3>
-            <p>Add a delay before the next message</p>
+            <h3>End Chat</h3>
+            <p>End the chat session</p>
           </div>
         </div>
       </div>
 
       <div className="palette-tip">
         <Lightbulb />
-        <p>Tip: Drag nodes onto the canvas or click to add them. Drag from connection handles to create flows.</p>
+        <p>
+          Tip: Use <strong>Router</strong> after Questions with multiple
+          options. Use <strong>Condition</strong> for simple true/false logic.
+        </p>
       </div>
     </div>
   );

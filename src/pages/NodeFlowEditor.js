@@ -1,16 +1,23 @@
+"use client"
+
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ReactFlow, MiniMap, Controls, Background, BackgroundVariant, Panel } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "../styles/NodeFlow.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import "../styles/chatbot-tester.css";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import { Play, Download } from "lucide-react";
 
 import { nodeTypes } from "../components/nodes";
 import { PropertiesPanel } from "../components/properties-panel";
 import { NodePalette } from "../components/node-pallete";
 import { FlowControls } from "../components/flow-controls";
+import { ChatbotTester } from "../components/chatbot-tester";
 import { useNodeFlow } from "../hooks/use-node-flow";
+import { useFirestoreFlow } from "../hooks/use-firestore-flow";
+import { exportFlowData } from "../utils/firestore-helpers";
 
 function NodeFlowEdit() {
   const navigate = useNavigate();
@@ -18,10 +25,10 @@ function NodeFlowEdit() {
   const [chatbot, setChatbot] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [saveStatus, setSaveStatus] = useState("idle");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [lastSavedData, setLastSavedData] = useState({ nodes: [], edges: [] });
-  const [lastSavedTime, setLastSavedTime] = useState(null);
+  const [showChatbotTester, setShowChatbotTester] = useState(false);
+  const [flowStats, setFlowStats] = useState(null);
 
   const {
     nodes,
@@ -37,6 +44,17 @@ function NodeFlowEdit() {
     defaultNodes,
   } = useNodeFlow();
 
+  const {
+    saveFlow,
+    loadFlow,
+    autoSave,
+    getFlowStats,
+    saveStatus,
+    loadStatus,
+    lastSavedTime,
+    validationErrors,
+  } = useFirestoreFlow(id);
+
   const handleBackClick = () => {
     if (hasUnsavedChanges) {
       if (window.confirm("You have unsaved changes. Are you sure you want to leave?")) {
@@ -47,7 +65,6 @@ function NodeFlowEdit() {
     }
   };
 
-  // Load chatbot data and flow from Firestore
   useEffect(() => {
     const fetchBot = async () => {
       try {
@@ -59,27 +76,22 @@ function NodeFlowEdit() {
           const data = docSnap.data();
           setChatbot(data);
 
-          // Load flow data if it exists
-          if (data.flowData && data.flowData.nodes && data.flowData.edges) {
-            console.log("Loading existing flow data:", data.flowData);
-            setNodes(data.flowData.nodes);
-            setEdges(data.flowData.edges);
-            setLastSavedData({
-              nodes: data.flowData.nodes,
-              edges: data.flowData.edges,
-            });
-            if (data.flowData.lastModified) {
-              setLastSavedTime(new Date(data.flowData.lastModified));
+          try {
+            const flowData = await loadFlow();
+            if (flowData && flowData.nodes && flowData.edges) {
+              setNodes(flowData.nodes);
+              setEdges(flowData.edges);
+              setLastSavedData({ nodes: flowData.nodes, edges: flowData.edges });
+              setFlowStats(getFlowStats(flowData.nodes, flowData.edges));
+            } else {
+              setLastSavedData({ nodes: defaultNodes, edges: [] });
+              setFlowStats(getFlowStats(defaultNodes, []));
             }
-          } else {
-            console.log("No existing flow data, using default nodes");
-            setLastSavedData({
-              nodes: defaultNodes,
-              edges: [],
-            });
+          } catch {
+            setLastSavedData({ nodes: defaultNodes, edges: [] });
+            setFlowStats(getFlowStats(defaultNodes, []));
           }
         } else {
-          console.log("No such chatbot!");
           alert("Chatbot not found!");
           navigate("/dashboard");
         }
@@ -92,29 +104,27 @@ function NodeFlowEdit() {
       }
     };
 
-    if (id) {
-      fetchBot();
-    }
-  }, [id, navigate, setNodes, setEdges, defaultNodes]);
+    if (id) fetchBot();
+  }, [id, navigate, setNodes, setEdges, defaultNodes, loadFlow, getFlowStats]);
 
-  // Track unsaved changes
   useEffect(() => {
     if (!isLoading) {
       const currentData = JSON.stringify({ nodes, edges });
       const savedData = JSON.stringify({ nodes: lastSavedData.nodes, edges: lastSavedData.edges });
       setHasUnsavedChanges(currentData !== savedData);
+      setFlowStats(getFlowStats(nodes, edges));
     }
-  }, [nodes, edges, lastSavedData, isLoading]);
+  }, [nodes, edges, lastSavedData, isLoading, getFlowStats]);
 
-  // ReactFlow event handlers
-  const onNodeClick = useCallback((event, node) => {
-    setSelectedNode(node);
-  }, []);
+  useEffect(() => {
+    if (!isLoading && hasUnsavedChanges) {
+      const cleanup = autoSave(nodes, edges, 30000);
+      return cleanup;
+    }
+  }, [nodes, edges, hasUnsavedChanges, isLoading, autoSave]);
 
-  const onPaneClick = useCallback(() => {
-    setSelectedNode(null);
-  }, []);
-
+  const onNodeClick = useCallback((event, node) => setSelectedNode(node), []);
+  const onPaneClick = useCallback(() => setSelectedNode(null), []);
   const onEdgeClick = useCallback(
     (event, edge) => {
       if (window.confirm("Delete this connection?")) {
@@ -124,7 +134,6 @@ function NodeFlowEdit() {
     [setEdges]
   );
 
-  // Drag and drop from palette
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -133,17 +142,13 @@ function NodeFlowEdit() {
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
-
       const type = event.dataTransfer.getData("application/reactflow");
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
+      if (!type) return;
 
       const position = {
         x: event.clientX - event.currentTarget.getBoundingClientRect().left - 100,
         y: event.clientY - event.currentTarget.getBoundingClientRect().top - 50,
       };
-
       addNode(type, position);
     },
     [addNode]
@@ -167,57 +172,58 @@ function NodeFlowEdit() {
     setSelectedNode(null);
   };
 
-  // Save flow to Firestore
   const handleSaveFlow = async () => {
     try {
-      setSaveStatus("saving");
-
-      const now = new Date();
-      const flowData = {
-        nodes,
-        edges,
-        lastModified: now.toISOString(),
-        nodeCount: nodes.length,
-        edgeCount: edges.length,
-      };
-
-      const docRef = doc(db, "webchat", id);
-      await updateDoc(docRef, {
-        flowData: flowData,
-        updatedAt: now,
+      const success = await saveFlow(nodes, edges, {
+        title: chatbot?.title,
+        description: chatbot?.description,
+        isActive: true,
       });
-      console.log(JSON.stringify(flowData));
 
-      // Update local state
-      setLastSavedData({ nodes, edges });
-      setLastSavedTime(now);
-      setSaveStatus("saved");
-
-      console.log("Flow saved successfully!");
-
-      // Reset status after 2 seconds
-      setTimeout(() => {
-        setSaveStatus("idle");
-      }, 2000);
+      if (success) {
+        setLastSavedData({ nodes, edges });
+      } else {
+        if (validationErrors.length > 0) {
+          alert("Validation errors:\n" + validationErrors.join("\n"));
+        } else {
+          alert("Error saving flow. Please try again.");
+        }
+      }
     } catch (error) {
       console.error("Error saving flow:", error);
-      setSaveStatus("error");
       alert("Error saving flow. Please try again.");
-
-      // Reset status after 3 seconds
-      setTimeout(() => {
-        setSaveStatus("idle");
-      }, 3000);
     }
   };
 
-  // Format time for display
-  const formatTime = (date) => {
-    if (!date) return "Never";
-    return date.toLocaleString();
+  const handleExportFlow = () => {
+    try {
+      const exportData = exportFlowData(nodes, edges, chatbot);
+      const blob = new Blob([exportData], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${chatbot?.title || "chatbot"}-flow.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting flow:", error);
+      alert("Error exporting flow");
+    }
   };
 
-  if (isLoading) {
+  const formatTime = (date) => (date ? date.toLocaleString() : "Never");
+  const toggleChatbotTester = () => setShowChatbotTester((prev) => !prev);
+  const handleTestClick = () => {
+    if (validationErrors.length === 0) {
+      toggleChatbotTester();
+    } else {
+      alert("Please fix the following issues before testing:\n" + validationErrors.join("\n"));
+    }
+  };
+
+  if (isLoading || loadStatus === "loading") {
     return (
       <div className="NodeFlowEditor">
         <div className="loading-container">
@@ -257,44 +263,67 @@ function NodeFlowEdit() {
             fitView
             attributionPosition="bottom-left"
             connectionLineStyle={{ stroke: "#3b82f6", strokeWidth: 2 }}
-            defaultEdgeOptions={{
-              style: { strokeWidth: 2, stroke: "#6b7280" },
-              type: "smoothstep",
-            }}
+            defaultEdgeOptions={{ style: { strokeWidth: 2, stroke: "#6b7280" }, type: "smoothstep" }}
           >
             <Controls />
             <MiniMap
               nodeStrokeColor={(n) => {
-                if (n.type === "textMessage") return "#2563eb";
-                if (n.type === "question") return "#16a34a";
-                if (n.type === "conditional") return "#9333ea";
-                if (n.type === "delay") return "#ea580c";
-                return "#6b7280";
+                const colors = { textMessage: "#2563eb", question: "#16a34a", conditional: "#9333ea", router: "#ea580c", endChat: "#b91c1c" };
+                return colors[n.type] || "#6b7280";
               }}
               nodeColor={(n) => {
-                if (n.type === "textMessage") return "#eff6ff";
-                if (n.type === "question") return "#f0fdf4";
-                if (n.type === "conditional") return "#faf5ff";
-                if (n.type === "delay") return "#fff7ed";
-                return "#f9fafb";
+                const fills = { textMessage: "#eff6ff", question: "#f0fdf4", conditional: "#faf5ff", router: "#fed7aa", endChat: "#fee2e2" };
+                return fills[n.type] || "#f9fafb";
               }}
             />
             <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
             <Panel position="bottom-right">
               <div className="canvas-info">
-                <div>
-                  Nodes: {nodes.length} | Connections: {edges.length}
+                <div className="flow-stats">
+                  <div>Nodes: {nodes.length} | Connections: {edges.length}</div>
+                  {flowStats && (
+                    <div className="detailed-stats">
+                      <div>📝 Messages: {flowStats.totalTextMessages}</div>
+                      <div>❓ Questions: {flowStats.totalQuestions}</div>
+                      <div>🔀 Routers: {flowStats.totalRouters}</div>
+                      <div>🔚 End Points: {flowStats.totalEndChats}</div>
+                    </div>
+                  )}
                 </div>
                 <div>Last saved: {formatTime(lastSavedTime)}</div>
+                <div className="canvas-actions">
+                  <button className="test-flow-button" onClick={handleTestClick}>
+                    <Play size={16} /> Test Chatbot
+                  </button>
+                  <button className="export-flow-button" onClick={handleExportFlow}>
+                    <Download size={16} /> Export
+                  </button>
+                </div>
+                {validationErrors.length > 0 && (
+                  <div className="validation-errors">
+                    <div className="error-title">⚠️ Issues found:</div>
+                    {validationErrors.map((error, index) => (
+                      <div key={index} className="error-item">{error}</div>
+                    ))}
+                  </div>
+                )}
               </div>
             </Panel>
           </ReactFlow>
         </div>
 
         <div className="node-property">
-          <PropertiesPanel selectedNode={selectedNode} onUpdateNode={updateNodeData} onDeleteNode={handleNodeDelete} />
+          <PropertiesPanel
+            selectedNode={selectedNode}
+            onUpdateNode={updateNodeData}
+            onDeleteNode={handleNodeDelete}
+            nodes={nodes}
+            edges={edges}
+          />
         </div>
       </div>
+
+      {showChatbotTester && <ChatbotTester nodes={nodes} edges={edges} onClose={toggleChatbotTester} />}
     </div>
   );
 }

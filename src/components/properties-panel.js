@@ -1,44 +1,75 @@
-import { useEffect, useState } from "react";
-import { Settings, Plus, Trash2 } from "lucide-react";
+"use client"
 
-export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) => {
-  const [localData, setLocalData] = useState({});
+import { useEffect, useState } from "react"
+import { Settings, Plus, Trash2, RefreshCw } from "lucide-react"
+
+export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode, nodes, edges }) => {
+  const [localData, setLocalData] = useState({})
 
   useEffect(() => {
     if (selectedNode) {
-      setLocalData(selectedNode.data);
+      setLocalData(selectedNode.data)
     }
-  }, [selectedNode]);
+  }, [selectedNode])
 
   const handleUpdate = (field, value) => {
-    const newData = { ...localData, [field]: value };
-    setLocalData(newData);
+    const newData = { ...localData, [field]: value }
+    setLocalData(newData)
     if (selectedNode) {
-      onUpdateNode(selectedNode.id, newData);
+      onUpdateNode(selectedNode.id, newData)
     }
-  };
+  }
 
   const addOption = () => {
-    const newOptions = [...(localData.options || []), `Option ${(localData.options?.length || 0) + 1}`];
-    handleUpdate("options", newOptions);
-  };
+    const newOptions = [...(localData.options || []), `Option ${(localData.options?.length || 0) + 1}`]
+    handleUpdate("options", newOptions)
+  }
 
   const removeOption = (index) => {
-    const newOptions = localData.options.filter((_, i) => i !== index);
-    handleUpdate("options", newOptions);
-  };
+    const newOptions = localData.options.filter((_, i) => i !== index)
+    handleUpdate("options", newOptions)
+  }
 
   const updateOption = (index, value) => {
-    const newOptions = [...localData.options];
-    newOptions[index] = value;
-    handleUpdate("options", newOptions);
-  };
+    const newOptions = [...localData.options]
+    newOptions[index] = value
+    handleUpdate("options", newOptions)
+  }
+
+  const addRoute = () => {
+    const newRoutes = [...(localData.routes || []), `Route ${(localData.routes?.length || 0) + 1}`]
+    handleUpdate("routes", newRoutes)
+  }
+
+  const removeRoute = (index) => {
+    const newRoutes = localData.routes.filter((_, i) => i !== index)
+    handleUpdate("routes", newRoutes)
+  }
+
+  const updateRoute = (index, value) => {
+    const newRoutes = [...localData.routes]
+    newRoutes[index] = value
+    handleUpdate("routes", newRoutes)
+  }
+
+  const syncWithConnectedQuestion = () => {
+    if (!selectedNode || selectedNode.type !== "router") return
+
+    const incomingEdge = edges.find((edge) => edge.target === selectedNode.id)
+    if (!incomingEdge) return
+
+    const sourceNode = nodes.find((node) => node.id === incomingEdge.source)
+    if (!sourceNode || sourceNode.type !== "question") return
+
+    const questionOptions = sourceNode.data.options || []
+    handleUpdate("routes", [...questionOptions])
+  }
 
   const handleDeleteNode = () => {
     if (selectedNode && window.confirm("Are you sure you want to delete this node?")) {
-      onDeleteNode(selectedNode.id);
+      onDeleteNode(selectedNode.id)
     }
-  };
+  }
 
   if (!selectedNode) {
     return (
@@ -53,26 +84,15 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
           <p className="no-selection">Select a node to edit its properties</p>
           <div className="connection-guide">
             <h3>Connection Guide:</h3>
-            <div className="guide-item">
-              <div className="handle-demo input"></div>
-              <span>Input (Blue) - Where connections come in</span>
-            </div>
-            <div className="guide-item">
-              <div className="handle-demo output"></div>
-              <span>Output (Purple) - Where connections go out</span>
-            </div>
-            <div className="guide-item">
-              <div className="handle-demo true"></div>
-              <span>True (Green) - Conditional true path</span>
-            </div>
-            <div className="guide-item">
-              <div className="handle-demo false"></div>
-              <span>False (Red) - Conditional false path</span>
-            </div>
+            <div className="guide-item"><div className="handle-demo input"></div><span>Input (Blue)</span></div>
+            <div className="guide-item"><div className="handle-demo output"></div><span>Output (Purple)</span></div>
+            <div className="guide-item"><div className="handle-demo true"></div><span>True (Green)</span></div>
+            <div className="guide-item"><div className="handle-demo false"></div><span>False (Red)</span></div>
+            <div className="guide-item"><div className="handle-demo router"></div><span>Router (Colors)</span></div>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -149,6 +169,39 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
           </>
         )}
 
+        {selectedNode.type === "router" && (
+          <div className="property-group">
+            <div className="options-header">
+              <label>Route Paths</label>
+              <div className="router-controls">
+                <button onClick={syncWithConnectedQuestion} className="sync-routes-btn" title="Sync with connected question">
+                  <RefreshCw size={16} />
+                </button>
+                <button onClick={addRoute} className="add-option-btn">
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+            <p className="helper-text">Each route corresponds to a question option</p>
+            <div className="options-list">
+              {(localData.routes || []).map((route, index) => (
+                <div key={index} className="option-input">
+                  <input
+                    type="text"
+                    value={route}
+                    onChange={(e) => updateRoute(index, e.target.value)}
+                    placeholder={`Route ${index + 1}`}
+                    className="property-input"
+                  />
+                  <button onClick={() => removeRoute(index)} className="remove-option-btn">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {selectedNode.type === "conditional" && (
           <>
             <div className="property-group">
@@ -157,11 +210,10 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
                 type="text"
                 value={localData.condition || ""}
                 onChange={(e) => handleUpdate("condition", e.target.value)}
-                placeholder="e.g., user_input, user_name"
+                placeholder="e.g., user_input"
                 className="property-input"
               />
             </div>
-
             <div className="property-group">
               <label>Operator</label>
               <select
@@ -177,7 +229,6 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
                 <option value="less_than">Less than</option>
               </select>
             </div>
-
             <div className="property-group">
               <label>Value</label>
               <input
@@ -191,16 +242,15 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
           </>
         )}
 
-        {selectedNode.type === "delay" && (
+        {selectedNode.type === "endChat" && (
           <div className="property-group">
-            <label>Delay Duration (seconds)</label>
-            <input
-              type="number"
-              value={localData.duration || 2}
-              onChange={(e) => handleUpdate("duration", Number.parseInt(e.target.value) || 2)}
-              min="1"
-              max="60"
-              className="property-input"
+            <label>End Message</label>
+            <textarea
+              value={localData.message || ""}
+              onChange={(e) => handleUpdate("message", e.target.value)}
+              placeholder="Enter end chat message..."
+              rows={4}
+              className="property-textarea"
             />
           </div>
         )}
@@ -213,5 +263,5 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode }) =>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

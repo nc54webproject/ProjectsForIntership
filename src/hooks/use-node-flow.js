@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useCallback, useMemo } from "react";
-import { addEdge, useNodesState, useEdgesState } from "@xyflow/react";
+import { useCallback, useMemo } from "react"
+import { addEdge, useNodesState, useEdgesState } from "@xyflow/react"
 
 export const useNodeFlow = () => {
   // Default initial nodes
@@ -17,94 +17,115 @@ export const useNodeFlow = () => {
         },
       },
     ],
-    []
-  );
+    [],
+  )
 
-  // ReactFlow state management
-  const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
   const getDefaultNodeData = (type) => {
     switch (type) {
       case "textMessage":
-        return { label: "Text Message", message: "Enter your message here..." };
+        return { label: "Text Message", message: "Enter your message here..." }
       case "question":
         return {
           label: "Question",
           question: "What would you like to know?",
           options: ["Option 1", "Option 2"],
-        };
+        }
       case "conditional":
         return {
           label: "Conditional",
           condition: "user_input",
           operator: "equals",
           value: "",
-        };
-      case "delay":
-        return { label: "Delay", duration: 2 };
+        }
+      case "router":
+        return {
+          label: "Router",
+          routes: ["Route 1", "Route 2"],
+        }
+      case "endChat":
+        return { label: "End Chat", message: "Thank you for chatting with us. Have a great day!" }
       default:
-        return { label: "Node" };
+        return { label: "Node" }
     }
-  };
+  }
 
-  const addNode = useCallback((type, position) => {
-    const newNode = {
-      id: `${type}-${Date.now()}`,
-      type,
-      position,
-      data: getDefaultNodeData(type),
-    };
-    setNodes((nds) => [...nds, newNode]);
-  }, [setNodes]);
+  const addNode = useCallback(
+    (type, position) => {
+      const newNode = {
+        id: `${type}-${Date.now()}`,
+        type,
+        position,
+        data: getDefaultNodeData(type),
+      }
+      setNodes((nds) => [...nds, newNode])
+    },
+    [setNodes],
+  )
 
-  const updateNodeData = useCallback((nodeId, newData) => {
-    setNodes((nds) =>
-      nds.map((node) =>
-        node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node
+  const updateNodeData = useCallback(
+    (nodeId, newData) => {
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node,
+        ),
       )
-    );
-  }, [setNodes]);
+    },
+    [setNodes],
+  )
 
-  const deleteNode = useCallback((nodeId) => {
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-    setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-  }, [setNodes, setEdges]);
+  const deleteNode = useCallback(
+    (nodeId) => {
+      setNodes((nds) => nds.filter((node) => node.id !== nodeId))
+      setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId))
+    },
+    [setNodes, setEdges],
+  )
 
-  const onConnect = useCallback((params) => {
-    console.log("Connection params:", params);
+  const onConnect = useCallback(
+    (params) => {
+      console.log("Connection params:", params)
 
-    let edgeStyle = {};
-    let edgeLabel = "";
+      let edgeStyle = {}
+      let edgeLabel = ""
 
-    if (params.sourceHandle === "true") {
-      edgeStyle = { stroke: "#22c55e", strokeWidth: 2 };
-      edgeLabel = "TRUE";
-    } else if (params.sourceHandle === "false") {
-      edgeStyle = { stroke: "#ef4444", strokeWidth: 2 };
-      edgeLabel = "FALSE";
-    } else {
-      edgeStyle = { stroke: "#6b7280", strokeWidth: 2 };
-    }
+      if (params.sourceHandle === "true") {
+        edgeStyle = { stroke: "#22c55e", strokeWidth: 2 }
+        edgeLabel = "TRUE"
+      } else if (params.sourceHandle === "false") {
+        edgeStyle = { stroke: "#ef4444", strokeWidth: 2 }
+        edgeLabel = "FALSE"
+      } else if (params.sourceHandle?.startsWith("route-")) {
+        const routeIndex = parseInt(params.sourceHandle.split("-")[1])
+        const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#06b6d4"]
+        edgeStyle = { stroke: colors[routeIndex % colors.length], strokeWidth: 2 }
+        edgeLabel = `Route ${routeIndex + 1}`
+      } else {
+        edgeStyle = { stroke: "#6b7280", strokeWidth: 2 }
+      }
 
-    const newEdge = {
-      ...params,
-      id: `edge-${Date.now()}`,
-      style: edgeStyle,
-      label: edgeLabel,
-      labelStyle: {
-        fill: edgeStyle.stroke,
-        fontWeight: 600,
-        fontSize: 12,
-      },
-      labelBgStyle: {
-        fill: "white",
-        fillOpacity: 0.8,
-      },
-    };
+      const newEdge = {
+        ...params,
+        id: `edge-${Date.now()}`,
+        style: edgeStyle,
+        label: edgeLabel,
+        labelStyle: {
+          fill: edgeStyle.stroke,
+          fontWeight: 600,
+          fontSize: 12,
+        },
+        labelBgStyle: {
+          fill: "white",
+          fillOpacity: 0.8,
+        },
+      }
 
-    setEdges((eds) => addEdge(newEdge, eds));
-  }, [setEdges]);
+      setEdges((eds) => addEdge(newEdge, eds))
+    },
+    [setEdges],
+  )
 
   return {
     nodes,
@@ -118,5 +139,5 @@ export const useNodeFlow = () => {
     updateNodeData,
     deleteNode,
     defaultNodes,
-  };
-};
+  }
+}
