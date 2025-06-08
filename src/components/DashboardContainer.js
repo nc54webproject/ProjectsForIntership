@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import CreateChatModal from "../modal/CreateChatModal";
 import { TemplateGallery } from "./template-system/template-gallery";
-import { Template, BarChart3, MessageSquare, Copy, ExternalLink } from "lucide-react";
+import { BookTemplate as Template, BarChart3, MessageSquare, Copy, ExternalLink } from "lucide-react";
 
 export default function DashboardContainer() {
   const [chatbots, setChatbots] = useState([]);

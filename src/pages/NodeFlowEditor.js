@@ -8,7 +8,7 @@ import "../styles/chatbot-tester.css"
 import { useNavigate, useParams } from "react-router-dom"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase"
-import { Play, Download, Template, BarChart3 } from "lucide-react"
+import { Play, Download, BookTemplate as Template, BarChart3 } from "lucide-react"
 
 import { nodeTypes } from "../components/nodes"
 import { PropertiesPanel } from "../components/properties-panel"
