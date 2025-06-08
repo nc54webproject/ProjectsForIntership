@@ -203,6 +203,20 @@
   color: #111827;
 }
 
+/* Palette Section Styles */
+.palette-section {
+  margin-bottom: 1.5rem;
+}
+
+.palette-section h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
 .palette-item {
   display: flex;
   align-items: flex-start;
@@ -213,6 +227,7 @@
   cursor: pointer;
   transition: all 0.2s;
   background: #f9fafb;
+  margin-bottom: 0.5rem;
 }
 
 .palette-item:hover {
@@ -254,6 +269,42 @@
 
 .palette-item.delay:hover {
   background: #ffedd5;
+}
+
+.palette-item.collect-input {
+  background: #fef7ff;
+  border-color: #e879f9;
+}
+
+.palette-item.collect-input:hover {
+  background: #fdf4ff;
+}
+
+.palette-item.api-integration {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+.palette-item.api-integration:hover {
+  background: #d1fae5;
+}
+
+.palette-item.broadcast {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.palette-item.broadcast:hover {
+  background: #fee2e2;
+}
+
+.palette-item.tag {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
+.palette-item.tag:hover {
+  background: #fef3c7;
 }
 
 .palette-item-content {
@@ -334,6 +385,26 @@
   border-color: #fed7aa;
 }
 
+.collect-input-node {
+  background-color: #fef7ff;
+  border-color: #e879f9;
+}
+
+.api-integration-node {
+  background-color: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+.broadcast-node {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.tag-node {
+  background-color: #fffbeb;
+  border-color: #fcd34d;
+}
+
 .node-header {
   display: flex;
   align-items: center;
@@ -359,6 +430,22 @@
 
 .delay-node .node-icon {
   color: #ea580c;
+}
+
+.collect-input-node .node-icon {
+  color: #a21caf;
+}
+
+.api-integration-node .node-icon {
+  color: #059669;
+}
+
+.broadcast-node .node-icon {
+  color: #dc2626;
+}
+
+.tag-node .node-icon {
+  color: #d97706;
 }
 
 .node-label {
@@ -428,6 +515,104 @@
   font-weight: bold;
 }
 
+/* API Integration Node Labels */
+.api-labels {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.success-label {
+  position: absolute;
+  left: -45px;
+  background: #22c55e;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.error-label {
+  position: absolute;
+  right: -35px;
+  background: #ef4444;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Node content styling for new types */
+.input-field {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.input-type {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.variable-name {
+  font-size: 12px;
+  color: #059669;
+  font-weight: 500;
+}
+
+.api-method {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.api-description {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.broadcast-message {
+  margin-bottom: 8px;
+}
+
+.broadcast-audience {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.broadcast-tags {
+  font-size: 12px;
+  color: #059669;
+}
+
+.tag-action {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag-item {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
 /* Connection guide */
 .connection-guide {
   margin-top: 1rem;
@@ -475,6 +660,20 @@
   background: #ef4444;
 }
 
+.handle-demo.router {
+  background: linear-gradient(
+    45deg,
+    #ef4444,
+    #f97316,
+    #eab308,
+    #22c55e,
+    #3b82f6
+  );
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
 /* Enhanced canvas info */
 .canvas-info {
   background: white;
@@ -489,6 +688,107 @@
 
 .canvas-info div:first-child {
   font-weight: 500;
+}
+
+.flow-stats {
+  margin-bottom: 8px;
+}
+
+.detailed-stats {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.detailed-stats div {
+  margin: 2px 0;
+}
+
+.canvas-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.test-flow-button,
+.export-flow-button,
+.template-button,
+.analytics-button,
+.webchat-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+}
+
+.test-flow-button {
+  background-color: #3b82f6;
+}
+
+.test-flow-button:hover {
+  background-color: #2563eb;
+}
+
+.export-flow-button {
+  background-color: #059669;
+}
+
+.export-flow-button:hover {
+  background-color: #047857;
+}
+
+.template-button {
+  background-color: #7c3aed;
+}
+
+.template-button:hover {
+  background-color: #6d28d9;
+}
+
+.analytics-button {
+  background-color: #dc2626;
+}
+
+.analytics-button:hover {
+  background-color: #b91c1c;
+}
+
+.webchat-button {
+  background-color: #ea580c;
+}
+
+.webchat-button:hover {
+  background-color: #c2410c;
+}
+
+.validation-errors {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 8px;
+  max-width: 250px;
+}
+
+.error-title {
+  font-weight: 600;
+  color: #dc2626;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.error-item {
+  font-size: 11px;
+  color: #b91c1c;
+  margin: 2px 0;
 }
 
 /* Properties panel */
@@ -662,6 +962,54 @@
   background: #fee2e2;
 }
 
+/* Router controls */
+.router-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.sync-routes-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.sync-routes-btn:hover {
+  background-color: #2563eb;
+}
+
+.helper-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+/* Checkbox styling */
+.checkbox-group {
+  margin-top: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
 /* ReactFlow customizations */
 .react-flow__node {
   border: none !important;
@@ -720,251 +1068,4 @@
   .reactflow-wrapper {
     height: 400px;
   }
-}
-
-/* Add this to your existing NodeFlow.css file */
-
-.test-flow-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background-color 0.2s;
-}
-
-.test-flow-button:hover {
-  background-color: #2563eb;
-}
-
-.export-flow-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #059669;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background-color 0.2s;
-}
-
-.export-flow-button:hover {
-  background-color: #047857;
-}
-
-.canvas-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.flow-stats {
-  margin-bottom: 8px;
-}
-
-.detailed-stats {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 4px;
-}
-
-.detailed-stats div {
-  margin: 2px 0;
-}
-
-.validation-errors {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 6px;
-  padding: 8px;
-  margin-top: 8px;
-  max-width: 250px;
-}
-
-.error-title {
-  font-weight: 600;
-  color: #dc2626;
-  font-size: 12px;
-  margin-bottom: 4px;
-}
-
-.error-item {
-  font-size: 11px;
-  color: #b91c1c;
-  margin: 2px 0;
-}
-
-/* End Chat Node Styling */
-.end-chat-node {
-  background-color: #fee2e2;
-  border: 2px solid #ef4444;
-  border-radius: 8px;
-  padding: 10px;
-  width: 220px;
-}
-
-.end-chat-node .node-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #fecaca;
-  color: #b91c1c;
-}
-
-.end-chat-node .node-icon {
-  color: #b91c1c;
-}
-
-.end-chat-node .node-label {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.end-chat-node .node-body {
-  font-size: 13px;
-  color: #7f1d1d;
-}
-
-/* Router Node Styling */
-.router-node {
-  background-color: #fed7aa;
-  border: 2px solid #ea580c;
-  border-radius: 8px;
-  padding: 10px;
-  width: 240px;
-  min-height: 120px;
-}
-
-.router-node .node-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #fdba74;
-  color: #c2410c;
-}
-
-.router-node .node-icon {
-  color: #c2410c;
-}
-
-.router-node .node-label {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.router-node .node-body {
-  font-size: 13px;
-  color: #9a3412;
-}
-
-.router-node .router-info {
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.router-node .route-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-height: 60px;
-  overflow-y: auto;
-}
-
-.router-node .route-item {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 2px 4px;
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.router-node .router-labels {
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-around;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.router-node .route-label {
-  background-color: white;
-  padding: 2px 4px;
-  border-radius: 3px;
-  border: 1px solid #e5e7eb;
-}
-
-.canvas-info {
-  background-color: white;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
-  color: #4b5563;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: 280px;
-}
-
-/* Properties Panel Updates */
-.router-controls {
-  display: flex;
-  gap: 8px;
-}
-
-.sync-routes-btn {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-}
-
-.sync-routes-btn:hover {
-  background-color: #2563eb;
-}
-
-.helper-text {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 8px;
-  font-style: italic;
-}
-
-.handle-demo.router {
-  background: linear-gradient(
-    45deg,
-    #ef4444,
-    #f97316,
-    #eab308,
-    #22c55e,
-    #3b82f6
-  );
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
 }

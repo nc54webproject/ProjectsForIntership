@@ -48,6 +48,41 @@ export const useNodeFlow = () => {
           label: "Router",
           routes: ["Route 1", "Route 2"],
         }
+      case "delay":
+        return {
+          label: "Delay",
+          duration: 2,
+        }
+      case "collectInput":
+        return {
+          label: "Collect Input",
+          prompt: "Please enter your response:",
+          inputType: "text",
+          variable: "user_input",
+          required: true,
+        }
+      case "apiIntegration":
+        return {
+          label: "API Integration",
+          url: "",
+          method: "GET",
+          description: "API call description",
+          headers: "",
+          body: "",
+        }
+      case "broadcast":
+        return {
+          label: "Broadcast",
+          message: "Broadcast message to users",
+          audience: "all",
+          tags: [],
+        }
+      case "tag":
+        return {
+          label: "Tag User",
+          action: "add",
+          tags: ["new_tag"],
+        }
       case "endChat":
         return { label: "End Chat", message: "Thank you for chatting with us. Have a great day!" }
       default:
@@ -106,6 +141,12 @@ export const useNodeFlow = () => {
       } else if (params.sourceHandle === "false") {
         edgeStyle = { stroke: "#ef4444", strokeWidth: 2 }
         edgeLabel = "FALSE"
+      } else if (params.sourceHandle === "success") {
+        edgeStyle = { stroke: "#22c55e", strokeWidth: 2 }
+        edgeLabel = "SUCCESS"
+      } else if (params.sourceHandle === "error") {
+        edgeStyle = { stroke: "#ef4444", strokeWidth: 2 }
+        edgeLabel = "ERROR"
       } else if (params.sourceHandle?.startsWith("route-")) {
         // For router handles, use different colors
         const routeIndex = parseInt(params.sourceHandle.split("-")[1])

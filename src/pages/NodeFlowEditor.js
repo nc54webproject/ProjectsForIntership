@@ -8,13 +8,16 @@ import "../styles/chatbot-tester.css"
 import { useNavigate, useParams } from "react-router-dom"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase"
-import { Play, Download } from "lucide-react"
+import { Play, Download, Template, BarChart3 } from "lucide-react"
 
 import { nodeTypes } from "../components/nodes"
 import { PropertiesPanel } from "../components/properties-panel"
 import { NodePalette } from "../components/node-pallete"
 import { FlowControls } from "../components/flow-controls"
 import { ChatbotTester } from "../components/chatbot-tester"
+import { TemplateGallery } from "../components/template-system/template-gallery"
+import { AnalyticsDashboard } from "../components/analytics/analytics-dashboard"
+import { ChatWidget } from "../components/web-chat-widget/chat-widget"
 import { useNodeFlow } from "../hooks/use-node-flow"
 import { useFirestoreFlow } from "../hooks/use-firestore-flow"
 import { exportFlowData } from "../utils/firestore-helpers"
@@ -36,6 +39,9 @@ const ReactFlowWrapper = ({
   validationErrors,
   onTestClick,
   onExportClick,
+  onTemplateClick,
+  onAnalyticsClick,
+  onWebChatClick,
 }) => {
   const reactFlowWrapper = useRef(null)
 
@@ -89,6 +95,11 @@ const ReactFlowWrapper = ({
             if (n.type === "conditional") return "#9333ea"
             if (n.type === "router") return "#ea580c"
             if (n.type === "endChat") return "#b91c1c"
+            if (n.type === "delay") return "#d97706"
+            if (n.type === "collectInput") return "#a21caf"
+            if (n.type === "apiIntegration") return "#059669"
+            if (n.type === "broadcast") return "#dc2626"
+            if (n.type === "tag") return "#d97706"
             return "#6b7280"
           }}
           nodeColor={(n) => {
@@ -97,6 +108,11 @@ const ReactFlowWrapper = ({
             if (n.type === "conditional") return "#faf5ff"
             if (n.type === "router") return "#fed7aa"
             if (n.type === "endChat") return "#fee2e2"
+            if (n.type === "delay") return "#fff7ed"
+            if (n.type === "collectInput") return "#fef7ff"
+            if (n.type === "apiIntegration") return "#ecfdf5"
+            if (n.type === "broadcast") return "#fef2f2"
+            if (n.type === "tag") return "#fffbeb"
             return "#f9fafb"
           }}
           position="bottom-left"
@@ -115,6 +131,8 @@ const ReactFlowWrapper = ({
                   <div>📝 Messages: {flowStats.totalTextMessages}</div>
                   <div>❓ Questions: {flowStats.totalQuestions}</div>
                   <div>🔀 Routers: {flowStats.totalRouters}</div>
+                  <div>⏱️ Delays: {flowStats.totalDelays || 0}</div>
+                  <div>📊 Inputs: {flowStats.totalCollectInputs || 0}</div>
                   <div>🔚 End Points: {flowStats.totalEndChats}</div>
                 </div>
               )}
@@ -123,11 +141,23 @@ const ReactFlowWrapper = ({
             <div className="canvas-actions">
               <button className="test-flow-button" onClick={onTestClick}>
                 <Play size={16} />
-                Test Chatbot
+                Test
               </button>
               <button className="export-flow-button" onClick={onExportClick}>
                 <Download size={16} />
                 Export
+              </button>
+              <button className="template-button" onClick={onTemplateClick}>
+                <Template size={16} />
+                Templates
+              </button>
+              <button className="analytics-button" onClick={onAnalyticsClick}>
+                <BarChart3 size={16} />
+                Analytics
+              </button>
+              <button className="webchat-button" onClick={onWebChatClick}>
+                <Play size={16} />
+                Web Chat
               </button>
             </div>
             {validationErrors.length > 0 && (
@@ -156,6 +186,9 @@ function NodeFlowEdit() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [lastSavedData, setLastSavedData] = useState({ nodes: [], edges: [] })
   const [showChatbotTester, setShowChatbotTester] = useState(false)
+  const [showTemplateGallery, setShowTemplateGallery] = useState(false)
+  const [showAnalytics, setShowAnalytics] = useState(false)
+  const [showWebChat, setShowWebChat] = useState(false)
   const [flowStats, setFlowStats] = useState(null)
 
   const {
@@ -368,7 +401,7 @@ function NodeFlowEdit() {
   }
 
   // Export flow data
-  const handleExportFlow = () => {
+  const handleExportFlow = () =>  {
     try {
       const exportData = exportFlowData(nodes, edges, chatbot)
       const blob = new Blob([exportData], { type: "application/json" })
@@ -400,6 +433,29 @@ function NodeFlowEdit() {
     }
   }
 
+  // Template system handlers
+  const handleTemplateClick = () => {
+    setShowTemplateGallery(true)
+  }
+
+  const handleSelectTemplate = (template) => {
+    if (window.confirm("This will replace your current flow. Are you sure?")) {
+      setNodes(template.nodes)
+      setEdges(template.edges)
+      setSelectedNode(null)
+    }
+  }
+
+  // Analytics handlers
+  const handleAnalyticsClick = () => {
+    setShowAnalytics(true)
+  }
+
+  // Web Chat handlers
+  const handleWebChatClick = () => {
+    setShowWebChat(true)
+  }
+
   if (isLoading || loadStatus === "loading") {
     return (
       <div className="NodeFlowEditor">
@@ -407,6 +463,22 @@ function NodeFlowEdit() {
           <div className="loading-spinner"></div>
           <p>Loading flow builder...</p>
         </div>
+      </div>
+    )
+  }
+
+  // Show analytics dashboard
+  if (showAnalytics) {
+    return (
+      <div className="NodeFlowEditor">
+        <FlowControls
+          chatbotTitle={chatbot?.title}
+          hasUnsavedChanges={hasUnsavedChanges}
+          saveStatus={saveStatus}
+          onBackClick={() => setShowAnalytics(false)}
+          onSaveFlow={handleSaveFlow}
+        />
+        <AnalyticsDashboard chatbotId={id} />
       </div>
     )
   }
@@ -441,6 +513,9 @@ function NodeFlowEdit() {
             validationErrors={validationErrors}
             onTestClick={handleTestClick}
             onExportClick={handleExportFlow}
+            onTemplateClick={handleTemplateClick}
+            onAnalyticsClick={handleAnalyticsClick}
+            onWebChatClick={handleWebChatClick}
           />
 
           <div className="node-property">
@@ -455,6 +530,45 @@ function NodeFlowEdit() {
         </div>
 
         {showChatbotTester && <ChatbotTester nodes={nodes} edges={edges} onClose={toggleChatbotTester} />}
+        
+        {showTemplateGallery && (
+          <TemplateGallery 
+            onClose={() => setShowTemplateGallery(false)} 
+            onSelectTemplate={handleSelectTemplate}
+          />
+        )}
+
+        {showWebChat && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px"
+          }}>
+            <div style={{
+              width: "400px",
+              height: "600px",
+              background: "white",
+              borderRadius: "12px",
+              overflow: "hidden"
+            }}>
+              <ChatWidget 
+                chatbotId={id}
+                nodes={nodes}
+                edges={edges}
+                isEmbedded={true}
+                onClose={() => setShowWebChat(false)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </ReactFlowProvider>
   )

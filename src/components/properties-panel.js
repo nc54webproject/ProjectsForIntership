@@ -52,6 +52,22 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode, node
     handleUpdate("routes", newRoutes)
   }
 
+  const addTag = () => {
+    const newTags = [...(localData.tags || []), `Tag ${(localData.tags?.length || 0) + 1}`]
+    handleUpdate("tags", newTags)
+  }
+
+  const removeTag = (index) => {
+    const newTags = localData.tags.filter((_, i) => i !== index)
+    handleUpdate("tags", newTags)
+  }
+
+  const updateTag = (index, value) => {
+    const newTags = [...localData.tags]
+    newTags[index] = value
+    handleUpdate("tags", newTags)
+  }
+
   const syncWithConnectedQuestion = () => {
     if (!selectedNode || selectedNode.type !== "router") return
 
@@ -160,6 +176,225 @@ export const PropertiesPanel = ({ selectedNode, onUpdateNode, onDeleteNode, node
                       className="property-input"
                     />
                     <button onClick={() => removeOption(index)} className="remove-option-btn">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {selectedNode.type === "collectInput" && (
+          <>
+            <div className="property-group">
+              <label>Input Prompt</label>
+              <textarea
+                value={localData.prompt || ""}
+                onChange={(e) => handleUpdate("prompt", e.target.value)}
+                placeholder="What would you like the user to enter?"
+                rows={3}
+                className="property-textarea"
+              />
+            </div>
+            <div className="property-group">
+              <label>Input Type</label>
+              <select
+                value={localData.inputType || "text"}
+                onChange={(e) => handleUpdate("inputType", e.target.value)}
+                className="property-select"
+              >
+                <option value="text">Text</option>
+                <option value="email">Email</option>
+                <option value="phone">Phone Number</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+              </select>
+            </div>
+            <div className="property-group">
+              <label>Variable Name</label>
+              <input
+                type="text"
+                value={localData.variable || ""}
+                onChange={(e) => handleUpdate("variable", e.target.value)}
+                placeholder="e.g., user_email, user_name"
+                className="property-input"
+              />
+            </div>
+            <div className="property-group">
+              <label>Validation</label>
+              <div className="checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={localData.required || false}
+                    onChange={(e) => handleUpdate("required", e.target.checked)}
+                  />
+                  Required field
+                </label>
+              </div>
+            </div>
+          </>
+        )}
+
+        {selectedNode.type === "delay" && (
+          <div className="property-group">
+            <label>Delay Duration (seconds)</label>
+            <input
+              type="number"
+              value={localData.duration || 2}
+              onChange={(e) => handleUpdate("duration", parseInt(e.target.value) || 2)}
+              min="1"
+              max="300"
+              className="property-input"
+            />
+          </div>
+        )}
+
+        {selectedNode.type === "apiIntegration" && (
+          <>
+            <div className="property-group">
+              <label>API URL</label>
+              <input
+                type="url"
+                value={localData.url || ""}
+                onChange={(e) => handleUpdate("url", e.target.value)}
+                placeholder="https://api.example.com/endpoint"
+                className="property-input"
+              />
+            </div>
+            <div className="property-group">
+              <label>HTTP Method</label>
+              <select
+                value={localData.method || "GET"}
+                onChange={(e) => handleUpdate("method", e.target.value)}
+                className="property-select"
+              >
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+            <div className="property-group">
+              <label>Description</label>
+              <textarea
+                value={localData.description || ""}
+                onChange={(e) => handleUpdate("description", e.target.value)}
+                placeholder="What does this API call do?"
+                rows={2}
+                className="property-textarea"
+              />
+            </div>
+            <div className="property-group">
+              <label>Headers (JSON)</label>
+              <textarea
+                value={localData.headers || ""}
+                onChange={(e) => handleUpdate("headers", e.target.value)}
+                placeholder='{"Authorization": "Bearer token", "Content-Type": "application/json"}'
+                rows={3}
+                className="property-textarea"
+              />
+            </div>
+            <div className="property-group">
+              <label>Request Body (JSON)</label>
+              <textarea
+                value={localData.body || ""}
+                onChange={(e) => handleUpdate("body", e.target.value)}
+                placeholder='{"key": "value"}'
+                rows={3}
+                className="property-textarea"
+              />
+            </div>
+          </>
+        )}
+
+        {selectedNode.type === "broadcast" && (
+          <>
+            <div className="property-group">
+              <label>Broadcast Message</label>
+              <textarea
+                value={localData.message || ""}
+                onChange={(e) => handleUpdate("message", e.target.value)}
+                placeholder="Message to broadcast to users..."
+                rows={4}
+                className="property-textarea"
+              />
+            </div>
+            <div className="property-group">
+              <label>Target Audience</label>
+              <select
+                value={localData.audience || "all"}
+                onChange={(e) => handleUpdate("audience", e.target.value)}
+                className="property-select"
+              >
+                <option value="all">All Users</option>
+                <option value="tagged">Tagged Users</option>
+                <option value="active">Active Users</option>
+                <option value="new">New Users</option>
+              </select>
+            </div>
+            {localData.audience === "tagged" && (
+              <div className="property-group">
+                <div className="options-header">
+                  <label>Target Tags</label>
+                  <button onClick={addTag} className="add-option-btn">
+                    <Plus size={16} />
+                  </button>
+                </div>
+                <div className="options-list">
+                  {(localData.tags || []).map((tag, index) => (
+                    <div key={index} className="option-input">
+                      <input
+                        type="text"
+                        value={tag}
+                        onChange={(e) => updateTag(index, e.target.value)}
+                        placeholder={`Tag ${index + 1}`}
+                        className="property-input"
+                      />
+                      <button onClick={() => removeTag(index)} className="remove-option-btn">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {selectedNode.type === "tag" && (
+          <>
+            <div className="property-group">
+              <label>Tag Action</label>
+              <select
+                value={localData.action || "add"}
+                onChange={(e) => handleUpdate("action", e.target.value)}
+                className="property-select"
+              >
+                <option value="add">Add Tags</option>
+                <option value="remove">Remove Tags</option>
+                <option value="replace">Replace All Tags</option>
+              </select>
+            </div>
+            <div className="property-group">
+              <div className="options-header">
+                <label>Tags</label>
+                <button onClick={addTag} className="add-option-btn">
+                  <Plus size={16} />
+                </button>
+              </div>
+              <div className="options-list">
+                {(localData.tags || []).map((tag, index) => (
+                  <div key={index} className="option-input">
+                    <input
+                      type="text"
+                      value={tag}
+                      onChange={(e) => updateTag(index, e.target.value)}
+                      placeholder={`Tag ${index + 1}`}
+                      className="property-input"
+                    />
+                    <button onClick={() => removeTag(index)} className="remove-option-btn">
                       <Trash2 size={16} />
                     </button>
                   </div>

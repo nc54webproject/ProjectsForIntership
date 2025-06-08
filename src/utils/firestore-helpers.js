@@ -24,6 +24,11 @@ export const analyzeFlow = (nodes, edges) => {
     totalConditionals: nodeTypes.conditional || 0,
     totalTextMessages: nodeTypes.textMessage || 0,
     totalEndChats: nodeTypes.endChat || 0,
+    totalDelays: nodeTypes.delay || 0,
+    totalCollectInputs: nodeTypes.collectInput || 0,
+    totalApiIntegrations: nodeTypes.apiIntegration || 0,
+    totalBroadcasts: nodeTypes.broadcast || 0,
+    totalTags: nodeTypes.tag || 0,
   }
 }
 
@@ -141,6 +146,20 @@ export const validateFlow = (nodes, edges) => {
     }
   }
 
+  const collectInputNodes = nodes.filter((node) => node.type === "collectInput")
+  for (const collectInputNode of collectInputNodes) {
+    if (!collectInputNode.data.variable || collectInputNode.data.variable.trim() === "") {
+      errors.push(`Collect Input node "${collectInputNode.data.label}" must have a variable name`)
+    }
+  }
+
+  const apiNodes = nodes.filter((node) => node.type === "apiIntegration")
+  for (const apiNode of apiNodes) {
+    if (!apiNode.data.url || apiNode.data.url.trim() === "") {
+      errors.push(`API Integration node "${apiNode.data.label}" must have a URL`)
+    }
+  }
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -151,8 +170,8 @@ export const validateFlow = (nodes, edges) => {
 export const exportFlowData = (nodes, edges, chatbotInfo) => {
   const flowData = {
     chatbotInfo: {
-      title: chatbotInfo.title,
-      description: chatbotInfo.description,
+      title: chatbotInfo?.title || "Untitled Chatbot",
+      description: chatbotInfo?.description || "",
       exportedAt: new Date().toISOString(),
     },
     flowData: {
@@ -162,6 +181,8 @@ export const exportFlowData = (nodes, edges, chatbotInfo) => {
       edgeCount: edges.length,
       flowMetadata: analyzeFlow(nodes, edges),
     },
+    version: "1.0",
+    exportedBy: "MyChatClone",
   }
 
   return JSON.stringify(flowData, null, 2)
