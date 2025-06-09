@@ -335,6 +335,7 @@ const CHATBOT_TEMPLATES = [
 export const TemplateGallery = ({ onClose, onSelectTemplate }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [previewTemplate, setPreviewTemplate] = useState(null);
 
   const categories = ["All", "Support", "Sales", "Events", "Feedback"];
 
@@ -349,6 +350,92 @@ export const TemplateGallery = ({ onClose, onSelectTemplate }) => {
     onSelectTemplate(template);
     onClose();
   };
+
+  const handlePreviewTemplate = (template) => {
+    setPreviewTemplate(template);
+  };
+
+  const closePreview = () => {
+    setPreviewTemplate(null);
+  };
+
+  if (previewTemplate) {
+    return (
+      <div className="template-gallery-overlay">
+        <div className="template-gallery">
+          <div className="template-gallery-header">
+            <div className="header-content">
+              <h2>Template Preview: {previewTemplate.name}</h2>
+              <p>Preview the conversation flow and structure</p>
+            </div>
+            <button className="close-button" onClick={closePreview}>
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="template-preview-content">
+            <div className="preview-info">
+              <div className="preview-meta">
+                <span className={`difficulty ${previewTemplate.difficulty.toLowerCase()}`}>
+                  {previewTemplate.difficulty}
+                </span>
+                <span className="node-count">
+                  {previewTemplate.nodes.length} nodes
+                </span>
+                <div className="template-rating">
+                  <Star size={16} fill="currentColor" />
+                  <span>{previewTemplate.rating}</span>
+                </div>
+              </div>
+              <p className="preview-description">{previewTemplate.description}</p>
+            </div>
+
+            <div className="preview-flow">
+              <h3>Conversation Flow Preview</h3>
+              <div className="flow-steps">
+                {previewTemplate.nodes.map((node, index) => (
+                  <div key={node.id} className="flow-step">
+                    <div className="step-number">{index + 1}</div>
+                    <div className="step-content">
+                      <div className="step-type">{node.type}</div>
+                      <div className="step-label">{node.data.label}</div>
+                      {node.data.message && (
+                        <div className="step-message">"{node.data.message}"</div>
+                      )}
+                      {node.data.question && (
+                        <div className="step-question">"{node.data.question}"</div>
+                      )}
+                      {node.data.options && (
+                        <div className="step-options">
+                          Options: {node.data.options.join(", ")}
+                        </div>
+                      )}
+                      {node.data.prompt && (
+                        <div className="step-prompt">"{node.data.prompt}"</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="preview-actions">
+              <button className="preview-back-button" onClick={closePreview}>
+                Back to Gallery
+              </button>
+              <button 
+                className="use-template-button"
+                onClick={() => handleUseTemplate(previewTemplate)}
+              >
+                <Download size={16} />
+                Use This Template
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="template-gallery-overlay">
@@ -421,7 +508,10 @@ export const TemplateGallery = ({ onClose, onSelectTemplate }) => {
                 </div>
 
                 <div className="template-actions">
-                  <button className="preview-button">
+                  <button 
+                    className="preview-button"
+                    onClick={() => handlePreviewTemplate(template)}
+                  >
                     <Eye size={16} />
                     Preview
                   </button>

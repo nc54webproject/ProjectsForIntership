@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { MessageSquare, XCircle, RefreshCw } from "lucide-react"
+import { MessageSquare, XCircle, RefreshCw, Send } from "lucide-react"
 import '../styles/chatbot-tester.css'
 
 export const ChatbotTester = ({ nodes, edges, onClose }) => {
@@ -9,6 +9,10 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
   const [currentNodeId, setCurrentNodeId] = useState(null)
   const [isTyping, setIsTyping] = useState(false)
   const [chatEnded, setChatEnded] = useState(false)
+  const [userVariables, setUserVariables] = useState({})
+  const [currentInput, setCurrentInput] = useState("")
+  const [waitingForInput, setWaitingForInput] = useState(false)
+  const [currentInputNode, setCurrentInputNode] = useState(null)
   const messagesEndRef = useRef(null)
 
   // Find the starting node (usually a text message node with no incoming edges)
@@ -21,7 +25,7 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
 
   // Process the current node
   useEffect(() => {
-    if (!currentNodeId || chatEnded) return
+    if (!currentNodeId || chatEnded || waitingForInput) return
 
     const currentNode = nodes.find((node) => node.id === currentNodeId)
     if (!currentNode) return
@@ -31,41 +35,11 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
 
     const timer = setTimeout(() => {
       setIsTyping(false)
-
-      if (currentNode.type === "textMessage") {
-        // Add bot message
-        setMessages((prev) => [...prev, { 
-          type: "bot", 
-          content: currentNode.data.message || "No message set" 
-        }])
-
-        // Find the next node
-        const nextNodeId = findNextNodeId(currentNodeId, edges)
-        if (nextNodeId) {
-          setCurrentNodeId(nextNodeId)
-        }
-      } else if (currentNode.type === "question") {
-        // Add bot question with options
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "bot",
-            content: currentNode.data.question || "No question set",
-            options: currentNode.data.options || [],
-          },
-        ])
-      } else if (currentNode.type === "endChat") {
-        // End the chat
-        setMessages((prev) => [...prev, { 
-          type: "bot", 
-          content: currentNode.data.message || "Chat session ended" 
-        }])
-        setChatEnded(true)
-      }
-    }, 1000) // Simulate typing delay
+      processNode(currentNode)
+    }, 1000)
 
     return () => clearTimeout(timer)
-  }, [currentNodeId, nodes, edges, chatEnded])
+  }, [currentNodeId, nodes, edges, chatEnded, waitingForInput])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -86,10 +60,92 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
     return outgoingEdges.length > 0 ? outgoingEdges[0].target : null
   }
 
+  // Process different node types
+  const processNode = (node) => {
+    switch (node.type) {
+      case "textMessage":
+        addBotMessage(node.data.message || "No message set")
+        moveToNextNode(node.id)
+        break
+      
+      case "question":
+        addBotMessage(node.data.question || "No question set", node.data.options)
+        break
+      
+      case "collectInput":
+        addBotMessage(node.data.prompt || "Please enter your response:")
+        setWaitingForInput(true)
+        setCurrentInputNode(node)
+        break
+      
+      case "delay":
+        const duration = (node.data.duration || 2) * 1000
+        setTimeout(() => {
+          moveToNextNode(node.id)
+        }, duration)
+        break
+      
+      case "tag":
+        // Simulate tagging action
+        addBotMessage(`✅ Tagged user with: ${(node.data.tags || []).join(", ")}`)
+        moveToNextNode(node.id)
+        break
+      
+      case "broadcast":
+        // Simulate broadcast action
+        addBotMessage(`📢 Broadcasting: ${node.data.message || "Broadcast message"}`)
+        moveToNextNode(node.id)
+        break
+      
+      case "apiIntegration":
+        // Simulate API call
+        addBotMessage("🔄 Making API call...")
+        setTimeout(() => {
+          addBotMessage("✅ API call successful!")
+          moveToNextNode(node.id)
+        }, 2000)
+        break
+      
+      case "endChat":
+        addBotMessage(node.data.message || "Chat session ended")
+        setChatEnded(true)
+        break
+      
+      default:
+        moveToNextNode(node.id)
+        break
+    }
+  }
+
+  const addBotMessage = (content, options = null) => {
+    const message = {
+      type: "bot",
+      content,
+      options,
+      timestamp: new Date(),
+    }
+    setMessages((prev) => [...prev, message])
+  }
+
+  const addUserMessage = (content) => {
+    const message = {
+      type: "user",
+      content,
+      timestamp: new Date(),
+    }
+    setMessages((prev) => [...prev, message])
+  }
+
+  const moveToNextNode = (currentNodeId) => {
+    const nextNodeId = findNextNodeId(currentNodeId, edges)
+    if (nextNodeId) {
+      setCurrentNodeId(nextNodeId)
+    }
+  }
+
   // Handle user option selection
   const handleOptionSelect = (option) => {
-    // Add user message
-    setMessages((prev) => [...prev, { type: "user", content: option }])
+    addUserMessage(option)
 
     const currentNode = nodes.find((node) => node.id === currentNodeId)
     if (!currentNode) return
@@ -141,10 +197,38 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
     }
   }
 
+  // Handle text input submission
+  const handleTextInputSubmit = (e) => {
+    e.preventDefault()
+    if (!currentInput.trim() || !waitingForInput || !currentInputNode) return
+
+    addUserMessage(currentInput)
+
+    // Save to variables if specified
+    if (currentInputNode.data.variable) {
+      setUserVariables(prev => ({
+        ...prev,
+        [currentInputNode.data.variable]: currentInput
+      }))
+    }
+
+    // Clear input state
+    setCurrentInput("")
+    setWaitingForInput(false)
+    setCurrentInputNode(null)
+
+    // Move to next node
+    moveToNextNode(currentInputNode.id)
+  }
+
   // Reset the chat
   const resetChat = () => {
     setMessages([])
     setChatEnded(false)
+    setUserVariables({})
+    setCurrentInput("")
+    setWaitingForInput(false)
+    setCurrentInputNode(null)
     const startNode = findStartNode(nodes, edges)
     if (startNode) setCurrentNodeId(startNode.id)
   }
@@ -296,6 +380,48 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Text input for collectInput nodes */}
+      {waitingForInput && !chatEnded && (
+        <div style={{
+          padding: "16px",
+          borderTop: "1px solid #e2e8f0",
+          backgroundColor: "white"
+        }}>
+          <form onSubmit={handleTextInputSubmit} style={{ display: "flex", gap: "8px" }}>
+            <input
+              type={currentInputNode?.data.inputType || "text"}
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              placeholder="Type your response..."
+              required={currentInputNode?.data.required}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                outline: "none"
+              }}
+            />
+            <button 
+              type="submit"
+              style={{
+                padding: "8px 16px",
+                backgroundColor: "#6366f1",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
+            >
+              <Send size={16} />
+            </button>
+          </form>
+        </div>
+      )}
+
       {chatEnded && (
         <div style={{
           padding: "16px",
@@ -323,6 +449,19 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
             <RefreshCw size={16} />
             Restart Chat
           </button>
+        </div>
+      )}
+
+      {/* Debug info */}
+      {Object.keys(userVariables).length > 0 && (
+        <div style={{
+          padding: "8px 16px",
+          backgroundColor: "#f8fafc",
+          borderTop: "1px solid #e2e8f0",
+          fontSize: "12px",
+          color: "#6b7280"
+        }}>
+          <strong>Variables:</strong> {JSON.stringify(userVariables)}
         </div>
       )}
     </div>

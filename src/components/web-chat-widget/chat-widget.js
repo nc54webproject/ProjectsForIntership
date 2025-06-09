@@ -17,6 +17,8 @@ export const ChatWidget = ({
   const [chatEnded, setChatEnded] = useState(false);
   const [userVariables, setUserVariables] = useState({});
   const [isMinimized, setIsMinimized] = useState(false);
+  const [waitingForInput, setWaitingForInput] = useState(false);
+  const [currentInputNode, setCurrentInputNode] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Initialize chat
@@ -38,7 +40,7 @@ export const ChatWidget = ({
 
   // Process current node
   useEffect(() => {
-    if (!currentNodeId || chatEnded) return;
+    if (!currentNodeId || chatEnded || waitingForInput) return;
 
     const currentNode = nodes.find((node) => node.id === currentNodeId);
     if (!currentNode) return;
@@ -51,7 +53,7 @@ export const ChatWidget = ({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [currentNodeId, nodes, edges, chatEnded]);
+  }, [currentNodeId, nodes, edges, chatEnded, waitingForInput]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -77,6 +79,8 @@ export const ChatWidget = ({
       
       case "collectInput":
         addBotMessage(node.data.prompt || "Please enter your response:");
+        setWaitingForInput(true);
+        setCurrentInputNode(node);
         break;
       
       case "delay":
@@ -84,6 +88,24 @@ export const ChatWidget = ({
         setTimeout(() => {
           moveToNextNode(node.id);
         }, duration);
+        break;
+      
+      case "tag":
+        addBotMessage(`✅ Tagged with: ${(node.data.tags || []).join(", ")}`);
+        moveToNextNode(node.id);
+        break;
+      
+      case "broadcast":
+        addBotMessage(`📢 ${node.data.message || "Broadcast message"}`);
+        moveToNextNode(node.id);
+        break;
+      
+      case "apiIntegration":
+        addBotMessage("🔄 Processing...");
+        setTimeout(() => {
+          addBotMessage("✅ Request completed!");
+          moveToNextNode(node.id);
+        }, 2000);
         break;
       
       case "endChat":
@@ -201,29 +223,31 @@ export const ChatWidget = ({
 
   const handleTextInput = (e) => {
     e.preventDefault();
-    if (!currentInput.trim()) return;
-
-    const currentNode = nodes.find((node) => node.id === currentNodeId);
-    if (!currentNode) return;
+    if (!currentInput.trim() || !waitingForInput || !currentInputNode) return;
 
     addUserMessage(currentInput);
 
     // Save to variables if it's a collectInput node
-    if (currentNode.type === "collectInput" && currentNode.data.variable) {
+    if (currentInputNode.data.variable) {
       setUserVariables(prev => ({
         ...prev,
-        [currentNode.data.variable]: currentInput
+        [currentInputNode.data.variable]: currentInput
       }));
     }
 
     setCurrentInput("");
-    moveToNextNode(currentNodeId);
+    setWaitingForInput(false);
+    setCurrentInputNode(null);
+    moveToNextNode(currentInputNode.id);
   };
 
   const resetChat = () => {
     setMessages([]);
     setChatEnded(false);
     setUserVariables({});
+    setCurrentInput("");
+    setWaitingForInput(false);
+    setCurrentInputNode(null);
     const startNode = findStartNode(nodes, edges);
     if (startNode) {
       setCurrentNodeId(startNode.id);
@@ -295,15 +319,24 @@ export const ChatWidget = ({
             <div ref={messagesEndRef} />
           </div>
 
-          {!chatEnded && (
+          {!chatEnded && !waitingForInput && (
+            <div className="chat-input">
+              <div style={{ padding: "16px", textAlign: "center", color: "#6b7280" }}>
+                Waiting for bot response...
+              </div>
+            </div>
+          )}
+
+          {waitingForInput && !chatEnded && (
             <div className="chat-input">
               <form onSubmit={handleTextInput}>
                 <input
-                  type="text"
+                  type={currentInputNode?.data.inputType || "text"}
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}
                   placeholder="Type your message..."
                   className="input-field"
+                  required={currentInputNode?.data.required}
                 />
                 <button type="submit" className="send-button">
                   <Send size={18} />
@@ -328,7 +361,7 @@ export const ChatWidget = ({
   return (
     <div className="chat-widget">
       {!isOpen && (
-        <button className="chat-widget-trigger\" onClick={toggleWidget}>
+        <button className="chat-widget-trigger" onClick={toggleWidget}>
           <MessageCircle size={24} />
           <span className="notification-badge">1</span>
         </button>
@@ -394,15 +427,16 @@ export const ChatWidget = ({
                 <div ref={messagesEndRef} />
               </div>
 
-              {!chatEnded && (
+              {waitingForInput && !chatEnded && (
                 <div className="chat-input">
                   <form onSubmit={handleTextInput}>
                     <input
-                      type="text"
+                      type={currentInputNode?.data.inputType || "text"}
                       value={currentInput}
                       onChange={(e) => setCurrentInput(e.target.value)}
                       placeholder="Type your message..."
                       className="input-field"
+                      required={currentInputNode?.data.required}
                     />
                     <button type="submit" className="send-button">
                       <Send size={18} />
