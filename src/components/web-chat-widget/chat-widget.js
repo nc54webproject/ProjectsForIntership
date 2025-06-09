@@ -361,7 +361,7 @@ export const ChatWidget = ({
   return (
     <div className="chat-widget">
       {!isOpen && (
-        <button className="chat-widget-trigger" onClick={toggleWidget}>
+        <button className="chat-widget-trigger\" onClick={toggleWidget}>
           <MessageCircle size={24} />
           <span className="notification-badge">1</span>
         </button>
