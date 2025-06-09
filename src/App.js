@@ -56,6 +56,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+            <Route
+  path="/chat/:id"
+  element={
+    <ProtectedRoute>
+      <NodeFlowEditor />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </Router>
     </AuthProvider>
