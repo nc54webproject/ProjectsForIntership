@@ -1,28 +1,5 @@
 'use client';
 
-<<<<<<< HEAD
-import React, { useEffect, useState, useCallback, useRef } from "react"
-import { ReactFlow, MiniMap, Controls, Background, BackgroundVariant, Panel, ReactFlowProvider } from "@xyflow/react"
-import "@xyflow/react/dist/style.css"
-import "../styles/NodeFlow.css"
-import "../styles/chatbot-tester.css"
-import { useNavigate, useParams } from "react-router-dom"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "../firebase"
-import { Play, Download, BookTemplate as Template, BarChart3 } from "lucide-react"
-
-import { nodeTypes } from "../components/nodes"
-import { PropertiesPanel } from "../components/properties-panel"
-import { NodePalette } from "../components/node-pallete"
-import { FlowControls } from "../components/flow-controls"
-import { ChatbotTester } from "../components/chatbot-tester"
-import { TemplateGallery } from "../components/template-system/template-gallery"
-import { AnalyticsDashboard } from "../components/analytics/analytics-dashboard"
-import { ChatWidget } from "../components/web-chat-widget/chat-widget"
-import { useNodeFlow } from "../hooks/use-node-flow"
-import { useFirestoreFlow } from "../hooks/use-firestore-flow"
-import { exportFlowData } from "../utils/firestore-helpers"
-=======
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   ReactFlow,
@@ -51,7 +28,6 @@ import { ChatWidget } from '../components/web-chat-widget/chat-widget';
 import { useNodeFlow } from '../hooks/use-node-flow';
 import { useFirestoreFlow } from '../hooks/use-firestore-flow';
 import { exportFlowData } from '../utils/firestore-helpers';
->>>>>>> e642b62 (new nodes and flow improvement)
 
 // Main ReactFlow component wrapped separately to avoid destroy issues
 const ReactFlowWrapper = ({
@@ -106,18 +82,10 @@ const ReactFlowWrapper = ({
           style: { strokeWidth: 2, stroke: '#6b7280' },
           type: 'smoothstep',
         }}
-<<<<<<< HEAD
-        deleteKeyCode={["Backspace", "Delete"]}
-        multiSelectionKeyCode={["Meta", "Ctrl"]}
-        panOnScroll={true}
-        panOnScrollMode="free"
-        panOnDrag={true}
-=======
         deleteKeyCode={['Backspace', 'Delete']}
         multiSelectionKeyCode={['Meta', 'Ctrl']}
         panOnScroll={true}
         panOnScrollMode="free"
->>>>>>> e642b62 (new nodes and flow improvement)
         selectionOnDrag={true}
         zoomOnScroll={true}
         zoomOnPinch={true}
@@ -133,32 +101,6 @@ const ReactFlowWrapper = ({
         />
         <MiniMap
           nodeStrokeColor={(n) => {
-<<<<<<< HEAD
-            if (n.type === "textMessage") return "#2563eb"
-            if (n.type === "question") return "#16a34a"
-            if (n.type === "conditional") return "#9333ea"
-            if (n.type === "router") return "#ea580c"
-            if (n.type === "endChat") return "#b91c1c"
-            if (n.type === "delay") return "#d97706"
-            if (n.type === "collectInput") return "#a21caf"
-            if (n.type === "apiIntegration") return "#059669"
-            if (n.type === "broadcast") return "#dc2626"
-            if (n.type === "tag") return "#d97706"
-            return "#6b7280"
-          }}
-          nodeColor={(n) => {
-            if (n.type === "textMessage") return "#eff6ff"
-            if (n.type === "question") return "#f0fdf4"
-            if (n.type === "conditional") return "#faf5ff"
-            if (n.type === "router") return "#fed7aa"
-            if (n.type === "endChat") return "#fee2e2"
-            if (n.type === "delay") return "#fff7ed"
-            if (n.type === "collectInput") return "#fef7ff"
-            if (n.type === "apiIntegration") return "#ecfdf5"
-            if (n.type === "broadcast") return "#fef2f2"
-            if (n.type === "tag") return "#fffbeb"
-            return "#f9fafb"
-=======
             if (n.type === 'textMessage') return '#2563eb';
             if (n.type === 'question') return '#16a34a';
             if (n.type === 'conditional') return '#9333ea';
@@ -183,7 +125,6 @@ const ReactFlowWrapper = ({
             if (n.type === 'broadcast') return '#fef2f2';
             if (n.type === 'tag') return '#fffbeb';
             return '#f9fafb';
->>>>>>> e642b62 (new nodes and flow improvement)
           }}
           position="bottom-left"
           pannable
@@ -216,27 +157,11 @@ const ReactFlowWrapper = ({
             <div className="canvas-actions">
               <button className="webchat-button" onClick={onWebChatClick}>
                 <Play size={16} />
-<<<<<<< HEAD
-                Test
-=======
                 Test Web Chat
->>>>>>> e642b62 (new nodes and flow improvement)
               </button>
               <button className="export-flow-button" onClick={onExportClick}>
                 <Download size={16} />
                 Export (.json)
-              </button>
-              <button className="template-button" onClick={onTemplateClick}>
-                <Template size={16} />
-                Templates
-              </button>
-              <button className="analytics-button" onClick={onAnalyticsClick}>
-                <BarChart3 size={16} />
-                Analytics
-              </button>
-              <button className="webchat-button" onClick={onWebChatClick}>
-                <Play size={16} />
-                Web Chat
               </button>
             </div>
             {validationErrors.length > 0 && (
@@ -257,20 +182,6 @@ const ReactFlowWrapper = ({
 };
 
 function NodeFlowEdit() {
-<<<<<<< HEAD
-  const navigate = useNavigate()
-  const { id } = useParams()
-  const [chatbot, setChatbot] = useState(null)
-  const [selectedNode, setSelectedNode] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [lastSavedData, setLastSavedData] = useState({ nodes: [], edges: [] })
-  const [showChatbotTester, setShowChatbotTester] = useState(false)
-  const [showTemplateGallery, setShowTemplateGallery] = useState(false)
-  const [showAnalytics, setShowAnalytics] = useState(false)
-  const [showWebChat, setShowWebChat] = useState(false)
-  const [flowStats, setFlowStats] = useState(null)
-=======
   const navigate = useNavigate();
   const { id } = useParams();
   const [chatbot, setChatbot] = useState(null);
@@ -283,7 +194,6 @@ function NodeFlowEdit() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showWebChat, setShowWebChat] = useState(false);
   const [flowStats, setFlowStats] = useState(null);
->>>>>>> e642b62 (new nodes and flow improvement)
 
   const {
     nodes,
@@ -383,11 +293,7 @@ function NodeFlowEdit() {
 
     if (id) {
       // Use void operator to prevent returning the Promise
-<<<<<<< HEAD
-      void fetchBot()
-=======
       void fetchBot();
->>>>>>> e642b62 (new nodes and flow improvement)
     }
   }, [id, navigate, setNodes, setEdges, defaultNodes, loadFlow, getFlowStats]);
 
@@ -409,21 +315,12 @@ function NodeFlowEdit() {
   // Auto-save functionality
   useEffect(() => {
     if (!isLoading && hasUnsavedChanges) {
-<<<<<<< HEAD
-      const timer = autoSave(nodes, edges, 30000) // Auto-save every 30 seconds
-      return () => {
-        if (timer) {
-          clearTimeout(timer)
-        }
-      }
-=======
       const timer = autoSave(nodes, edges, 30000); // Auto-save every 30 seconds
       return () => {
         if (timer) {
           clearTimeout(timer);
         }
       };
->>>>>>> e642b62 (new nodes and flow improvement)
     }
   }, [nodes, edges, hasUnsavedChanges, isLoading, autoSave]);
 
@@ -525,7 +422,7 @@ function NodeFlowEdit() {
   };
 
   // Export flow data
-  const handleExportFlow = () =>  {
+  const handleExportFlow = () => {
     try {
       const exportData = exportFlowData(nodes, edges, chatbot);
       const blob = new Blob([exportData], { type: 'application/json' });
@@ -562,30 +459,6 @@ function NodeFlowEdit() {
 
   // Template system handlers
   const handleTemplateClick = () => {
-<<<<<<< HEAD
-    setShowTemplateGallery(true)
-  }
-
-  const handleSelectTemplate = (template) => {
-    if (window.confirm("This will replace your current flow. Are you sure?")) {
-      setNodes(template.nodes)
-      setEdges(template.edges)
-      setSelectedNode(null)
-    }
-  }
-
-  // Analytics handlers
-  const handleAnalyticsClick = () => {
-    setShowAnalytics(true)
-  }
-
-  // Web Chat handlers
-  const handleWebChatClick = () => {
-    setShowWebChat(true)
-  }
-
-  if (isLoading || loadStatus === "loading") {
-=======
     setShowTemplateGallery(true);
   };
 
@@ -608,7 +481,6 @@ function NodeFlowEdit() {
   };
 
   if (isLoading || loadStatus === 'loading') {
->>>>>>> e642b62 (new nodes and flow improvement)
     return (
       <div className="NodeFlowEditor">
         <div className="loading-container">
@@ -632,22 +504,6 @@ function NodeFlowEdit() {
         />
       </div>
     );
-  }
-
-  // Show analytics dashboard
-  if (showAnalytics) {
-    return (
-      <div className="NodeFlowEditor">
-        <FlowControls
-          chatbotTitle={chatbot?.title}
-          hasUnsavedChanges={hasUnsavedChanges}
-          saveStatus={saveStatus}
-          onBackClick={() => setShowAnalytics(false)}
-          onSaveFlow={handleSaveFlow}
-        />
-        <AnalyticsDashboard chatbotId={id} />
-      </div>
-    )
   }
 
   return (
@@ -699,13 +555,6 @@ function NodeFlowEdit() {
           </div>
         </div>
 
-<<<<<<< HEAD
-        {showChatbotTester && <ChatbotTester nodes={nodes} edges={edges} onClose={toggleChatbotTester} />}
-        
-        {showTemplateGallery && (
-          <TemplateGallery 
-            onClose={() => setShowTemplateGallery(false)} 
-=======
         {showChatbotTester && (
           <ChatbotTester
             nodes={nodes}
@@ -717,35 +566,11 @@ function NodeFlowEdit() {
         {showTemplateGallery && (
           <TemplateGallery
             onClose={() => setShowTemplateGallery(false)}
->>>>>>> e642b62 (new nodes and flow improvement)
             onSelectTemplate={handleSelectTemplate}
           />
         )}
 
         {showWebChat && (
-<<<<<<< HEAD
-          <div style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "20px"
-          }}>
-            <div style={{
-              width: "400px",
-              height: "600px",
-              background: "white",
-              borderRadius: "12px",
-              overflow: "hidden"
-            }}>
-              <ChatWidget 
-=======
           <div
             style={{
               position: 'fixed',
@@ -771,7 +596,6 @@ function NodeFlowEdit() {
               }}
             >
               <ChatWidget
->>>>>>> e642b62 (new nodes and flow improvement)
                 chatbotId={id}
                 nodes={nodes}
                 edges={edges}

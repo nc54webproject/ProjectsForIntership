@@ -124,26 +124,6 @@
 
 .stat-value {
   color: #111827;
-<<<<<<< HEAD
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0.25rem 0;
-}
-
-.stat-change {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.stat-change.positive {
-  color: #059669;
-}
-
-.stat-change.negative {
-  color: #dc2626;
-}
-
-=======
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -161,7 +141,6 @@
   color: #dc2626;
 }
 
->>>>>>> e642b62 (new nodes and flow improvement)
 .chatbots-section {
   display: flex;
   flex-direction: column;
@@ -231,17 +210,12 @@
 }
 
 @keyframes spin {
-<<<<<<< HEAD
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-=======
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
   }
->>>>>>> e642b62 (new nodes and flow improvement)
 }
 
 .empty-state {
@@ -286,10 +260,7 @@
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
-=======
   justify-content: space-between;
->>>>>>> e642b62 (new nodes and flow improvement)
   gap: 1rem;
 }
 
@@ -372,11 +343,7 @@
 }
 
 .stat-item .stat-value {
-<<<<<<< HEAD
-  font-size: 1.25rem;
-=======
   font-size: 1rem;
->>>>>>> e642b62 (new nodes and flow improvement)
   font-weight: 600;
   color: #111827;
   margin: 0.25rem 0 0 0;
@@ -440,11 +407,7 @@
   .DashPerformanceStat {
     grid-template-columns: repeat(2, 1fr);
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .chatbots-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
@@ -454,27 +417,12 @@
   .DashboardContainer {
     padding: 1rem;
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-<<<<<<< HEAD
-  
-  .DashPerformanceStat {
-    grid-template-columns: 1fr;
-  }
-  
-  .chatbots-grid {
-    grid-template-columns: 1fr;
-  }
-  
-=======
 
   .DashPerformanceStat {
     grid-template-columns: 1fr;
@@ -484,23 +432,11 @@
     grid-template-columns: 1fr;
   }
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-<<<<<<< HEAD
-  
-  .chatbot-actions {
-    flex-direction: column;
-  }
-  
-  .action-btn {
-    flex: none;
-  }
-  
-=======
 
   .chatbot-actions {
     flex-direction: column;
@@ -510,7 +446,6 @@
     flex: none;
   }
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .empty-actions {
     flex-direction: column;
     width: 100%;
@@ -523,28 +458,17 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .stat-item {
     flex-direction: row;
     justify-content: space-between;
     text-align: left;
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> e642b62 (new nodes and flow improvement)
   .chatbot-header {
     flex-direction: column;
     align-items: flex-start;
   }
-<<<<<<< HEAD
-}
-=======
 }
 
 /* Existing Dashboard styles */
@@ -668,4 +592,3 @@
   color: #777;
   font-size: 14px;
 }
->>>>>>> e642b62 (new nodes and flow improvement)

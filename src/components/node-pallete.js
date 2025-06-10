@@ -14,11 +14,7 @@ import {
   Globe,
   Radio,
   Tag,
-<<<<<<< HEAD
-} from "lucide-react";
-=======
 } from 'lucide-react';
->>>>>>> e642b62 (new nodes and flow improvement)
 
 export const NodePalette = ({ onDragStart, onNodeClick }) => {
   return (
@@ -32,21 +28,12 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
         {/* Basic Nodes */}
         <div className="palette-section">
           <h3>Basic Nodes</h3>
-<<<<<<< HEAD
-          
-          <div
-            className="palette-item text-message"
-            draggable
-            onDragStart={(e) => onDragStart(e, "textMessage")}
-            onClick={() => onNodeClick("textMessage")}
-=======
 
           <div
             className="palette-item text-message"
             draggable
             onDragStart={(e) => onDragStart(e, 'textMessage')}
             onClick={() => onNodeClick('textMessage')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <MessageSquare />
             <div className="palette-item-content">
@@ -58,13 +45,8 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <div
             className="palette-item question"
             draggable
-<<<<<<< HEAD
-            onDragStart={(e) => onDragStart(e, "question")}
-            onClick={() => onNodeClick("question")}
-=======
             onDragStart={(e) => onDragStart(e, 'question')}
             onClick={() => onNodeClick('question')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <CircleHelp />
             <div className="palette-item-content">
@@ -76,13 +58,8 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <div
             className="palette-item collect-input"
             draggable
-<<<<<<< HEAD
-            onDragStart={(e) => onDragStart(e, "collectInput")}
-            onClick={() => onNodeClick("collectInput")}
-=======
             onDragStart={(e) => onDragStart(e, 'collectInput')}
             onClick={() => onNodeClick('collectInput')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <FileText />
             <div className="palette-item-content">
@@ -95,21 +72,12 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
         {/* Flow Control */}
         <div className="palette-section">
           <h3>Flow Control</h3>
-<<<<<<< HEAD
-          
-          <div
-            className="palette-item router"
-            draggable
-            onDragStart={(e) => onDragStart(e, "router")}
-            onClick={() => onNodeClick("router")}
-=======
 
           <div
             className="palette-item router"
             draggable
             onDragStart={(e) => onDragStart(e, 'router')}
             onClick={() => onNodeClick('router')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <Route />
             <div className="palette-item-content">
@@ -121,13 +89,8 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <div
             className="palette-item conditional"
             draggable
-<<<<<<< HEAD
-            onDragStart={(e) => onDragStart(e, "conditional")}
-            onClick={() => onNodeClick("conditional")}
-=======
             onDragStart={(e) => onDragStart(e, 'conditional')}
             onClick={() => onNodeClick('conditional')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <GitBranch />
             <div className="palette-item-content">
@@ -139,13 +102,8 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <div
             className="palette-item delay"
             draggable
-<<<<<<< HEAD
-            onDragStart={(e) => onDragStart(e, "delay")}
-            onClick={() => onNodeClick("delay")}
-=======
             onDragStart={(e) => onDragStart(e, 'delay')}
             onClick={() => onNodeClick('delay')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <Clock4 />
             <div className="palette-item-content">
@@ -158,32 +116,6 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
         {/* Advanced Nodes */}
         <div className="palette-section">
           <h3>Advanced</h3>
-<<<<<<< HEAD
-          
-          <div
-            className="palette-item api-integration"
-            draggable
-            onDragStart={(e) => onDragStart(e, "apiIntegration")}
-            onClick={() => onNodeClick("apiIntegration")}
-          >
-            <Globe />
-            <div className="palette-item-content">
-              <h3>API Integration</h3>
-              <p>Connect to external APIs and services</p>
-            </div>
-          </div>
-
-          <div
-            className="palette-item broadcast"
-            draggable
-            onDragStart={(e) => onDragStart(e, "broadcast")}
-            onClick={() => onNodeClick("broadcast")}
-          >
-            <Radio />
-            <div className="palette-item-content">
-              <h3>Broadcast</h3>
-              <p>Send messages to multiple users</p>
-=======
 
           <div
             className="palette-item api-integration"
@@ -195,17 +127,10 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
             <div className="palette-item-content">
               <h3>API Integration</h3>
               <p>Connect to external APIs and services</p>
->>>>>>> e642b62 (new nodes and flow improvement)
             </div>
           </div>
 
           <div
-<<<<<<< HEAD
-            className="palette-item tag"
-            draggable
-            onDragStart={(e) => onDragStart(e, "tag")}
-            onClick={() => onNodeClick("tag")}
-=======
             className="palette-item broadcast"
             draggable
             onDragStart={(e) => onDragStart(e, 'broadcast')}
@@ -223,7 +148,6 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
             draggable
             onDragStart={(e) => onDragStart(e, 'tag')}
             onClick={() => onNodeClick('tag')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <Tag />
             <div className="palette-item-content">
@@ -235,13 +159,8 @@ export const NodePalette = ({ onDragStart, onNodeClick }) => {
           <div
             className="palette-item end-chat"
             draggable
-<<<<<<< HEAD
-            onDragStart={(e) => onDragStart(e, "endChat")}
-            onClick={() => onNodeClick("endChat")}
-=======
             onDragStart={(e) => onDragStart(e, 'endChat')}
             onClick={() => onNodeClick('endChat')}
->>>>>>> e642b62 (new nodes and flow improvement)
           >
             <XCircle />
             <div className="palette-item-content">

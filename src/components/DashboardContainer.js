@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";
-import "../styles/Dashboard.css";
-import { auth, db } from "../firebase";
-import { useNavigate } from "react-router-dom";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import CreateChatModal from "../modal/CreateChatModal";
-import { TemplateGallery } from "./template-system/template-gallery";
-import { BookTemplate as Template, BarChart3, MessageSquare, Copy, ExternalLink } from "lucide-react";
-=======
 import React, { useEffect, useState } from 'react';
 import '../styles/Dashboard.css';
 import { auth, db } from '../firebase';
@@ -16,7 +6,6 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import CreateChatModal from '../modal/CreateChatModal';
 import { TemplateGallery } from './template-system/template-gallery';
 import { BookTemplate as Template, MessageSquare, Copy } from 'lucide-react';
->>>>>>> e642b62 (new nodes and flow improvement)
 
 export default function DashboardContainer() {
   const [chatbots, setChatbots] = useState([]);
@@ -30,26 +19,10 @@ export default function DashboardContainer() {
     navigate(`/webchat/${id}`);
   };
 
-<<<<<<< HEAD
-  const handleAnalytics = (id) => {
-    navigate(`/webchat/${id}?view=analytics`);
-  };
-
-  const handleCopyLink = (id) => {
-    const chatUrl = `${window.location.origin}/chat/${id}`;
-    navigator.clipboard.writeText(chatUrl);
-    alert("Chat link copied to clipboard!");
-  };
-
-  const handlePreview = (id) => {
-    const chatUrl = `${window.location.origin}/chat/${id}`;
-    window.open(chatUrl, '_blank');
-=======
   const handleCopyLink = (id) => {
     const chatUrl = `${window.location.origin}/chat/${id}`;
     navigator.clipboard.writeText(chatUrl);
     alert('Chat link copied to clipboard!');
->>>>>>> e642b62 (new nodes and flow improvement)
   };
 
   const openChatModal = () => setIsChatModalOpen(true);
@@ -65,13 +38,8 @@ export default function DashboardContainer() {
     // Create a new chatbot with the template
     try {
       const user = auth.currentUser;
-<<<<<<< HEAD
-      const { addDoc, collection } = await import("firebase/firestore");
-      
-=======
       const { addDoc, collection } = await import('firebase/firestore');
 
->>>>>>> e642b62 (new nodes and flow improvement)
       const newChatbot = {
         title: `${template.name} (Copy)`,
         description: template.description,
@@ -82,17 +50,6 @@ export default function DashboardContainer() {
           edges: template.edges,
           nodeCount: template.nodes.length,
           edgeCount: template.edges.length,
-<<<<<<< HEAD
-        }
-      };
-
-      const docRef = await addDoc(collection(db, "webchat"), newChatbot);
-      alert("Template applied successfully!");
-      navigate(`/webchat/${docRef.id}`);
-    } catch (error) {
-      console.error("Error creating chatbot from template:", error);
-      alert("Failed to create chatbot from template.");
-=======
         },
       };
 
@@ -102,7 +59,6 @@ export default function DashboardContainer() {
     } catch (error) {
       console.error('Error creating chatbot from template:', error);
       alert('Failed to create chatbot from template.');
->>>>>>> e642b62 (new nodes and flow improvement)
     }
   };
 
@@ -138,31 +94,6 @@ export default function DashboardContainer() {
   }, []);
 
   const STATS_OPTIONS = [
-<<<<<<< HEAD
-    { 
-      title: "Total Bots", 
-      value: chatbots.length,
-      icon: <MessageSquare size={20} />,
-      color: "#3b82f6"
-    },
-    { 
-      title: "Total Conversations", 
-      value: chatbots.reduce((acc, bot) => acc + (bot.analytics?.totalConversations || 0), 0),
-      icon: <BarChart3 size={20} />,
-      color: "#10b981"
-    },
-    { 
-      title: "Active Bots", 
-      value: chatbots.filter(bot => bot.isActive).length,
-      icon: <MessageSquare size={20} />,
-      color: "#f59e0b"
-    },
-    { 
-      title: "Avg. Response Rate", 
-      value: "87%",
-      icon: <BarChart3 size={20} />,
-      color: "#8b5cf6"
-=======
     {
       title: 'Total Bots',
       value: chatbots.length,
@@ -174,7 +105,6 @@ export default function DashboardContainer() {
       value: chatbots.filter((bot) => bot.isActive).length,
       icon: <MessageSquare size={20} />,
       color: '#f59e0b',
->>>>>>> e642b62 (new nodes and flow improvement)
     },
   ];
 
@@ -186,22 +116,8 @@ export default function DashboardContainer() {
             <h1>Dashboard</h1>
             <p>Overview of your chatbot performance and key metrics.</p>
           </div>
-<<<<<<< HEAD
-          <div className="dashboard-actions">
-            <button 
-              className="template-gallery-btn"
-              onClick={openTemplateGallery}
-            >
-              <Template size={16} />
-              Browse Templates
-            </button>
-          </div>
-        </div>
-        
-=======
         </div>
 
->>>>>>> e642b62 (new nodes and flow improvement)
         <div className="DashPerformanceStat">
           {STATS_OPTIONS.map(({ title, value, icon, color }) => (
             <div key={title} className="stat-card">
@@ -211,10 +127,6 @@ export default function DashboardContainer() {
               <div className="stat-content">
                 <p className="stat-title">{title}</p>
                 <p className="stat-value">{value || 0}</p>
-<<<<<<< HEAD
-                <span className="stat-change positive">+12% from last month</span>
-=======
->>>>>>> e642b62 (new nodes and flow improvement)
               </div>
             </div>
           ))}
@@ -224,17 +136,6 @@ export default function DashboardContainer() {
       <div className="chatbots-section">
         <div className="section-header">
           <h2>Your Chatbots</h2>
-<<<<<<< HEAD
-          <button
-            className="Chatbot-create-btn primary"
-            onClick={onCreateClick}
-          >
-            <MessageSquare size={16} />
-            Create New ChatBot
-          </button>
-        </div>
-        
-=======
           <div className="dashboard-actions">
             <button
               className="template-gallery-btn"
@@ -253,7 +154,6 @@ export default function DashboardContainer() {
           </div>
         </div>
 
->>>>>>> e642b62 (new nodes and flow improvement)
         <div className="chatbots-grid">
           {loading ? (
             <div className="loading-state">
@@ -264,14 +164,6 @@ export default function DashboardContainer() {
             <div className="empty-state">
               <MessageSquare size={48} />
               <h3>No ChatBots Created Yet</h3>
-<<<<<<< HEAD
-              <p>Get started by creating your first chatbot or browse our templates.</p>
-              <div className="empty-actions">
-                <button className="Chatbot-create-btn primary" onClick={onCreateClick}>
-                  Create New ChatBot
-                </button>
-                <button className="template-gallery-btn" onClick={openTemplateGallery}>
-=======
               <p>
                 Get started by creating your first chatbot or browse our
                 templates.
@@ -287,7 +179,6 @@ export default function DashboardContainer() {
                   className="template-gallery-btn"
                   onClick={openTemplateGallery}
                 >
->>>>>>> e642b62 (new nodes and flow improvement)
                   <Template size={16} />
                   Browse Templates
                 </button>
@@ -299,12 +190,6 @@ export default function DashboardContainer() {
                 <div className="chatbot-header">
                   <div className="chatbot-info">
                     <h3>{bot.title}</h3>
-<<<<<<< HEAD
-                    <p>{bot.description || "No description provided"}</p>
-                  </div>
-                  <div className="chatbot-status">
-                    <span className={`status-badge ${bot.isActive ? 'active' : 'inactive'}`}>
-=======
                     <p>{bot.description || 'No description provided'}</p>
                   </div>
                   <div className="chatbot-status">
@@ -313,59 +198,10 @@ export default function DashboardContainer() {
                         bot.isActive ? 'active' : 'inactive'
                       }`}
                     >
->>>>>>> e642b62 (new nodes and flow improvement)
                       {bot.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
-<<<<<<< HEAD
-                
-                <div className="chatbot-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">Nodes</span>
-                    <span className="stat-value">{bot.flowData?.nodeCount || 0}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Connections</span>
-                    <span className="stat-value">{bot.flowData?.edgeCount || 0}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Created</span>
-                    <span className="stat-value">
-                      {bot.createdAt?.toDate?.()?.toLocaleDateString() || 'Unknown'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="chatbot-actions">
-                  <button 
-                    className="action-btn primary"
-                    onClick={() => handleEdit(bot.id)}
-                  >
-                    Edit Flow
-                  </button>
-                  <button 
-                    className="action-btn secondary"
-                    onClick={() => handleCopyLink(bot.id)}
-                  >
-                    <Copy size={14} />
-                    Copy Link
-                  </button>
-                  <button 
-                    className="action-btn secondary"
-                    onClick={() => handlePreview(bot.id)}
-                  >
-                    <ExternalLink size={14} />
-                    Preview
-                  </button>
-                  <button 
-                    className="action-btn secondary"
-                    onClick={() => handleAnalytics(bot.id)}
-                  >
-                    <BarChart3 size={14} />
-                    Analytics
-                  </button>
-=======
                 <div
                   style={{
                     display: 'flex',
@@ -410,7 +246,6 @@ export default function DashboardContainer() {
                       Copy Link
                     </button>
                   </div>
->>>>>>> e642b62 (new nodes and flow improvement)
                 </div>
               </div>
             ))
@@ -420,13 +255,8 @@ export default function DashboardContainer() {
 
       {isChatModalOpen && <CreateChatModal onClose={closeChatModal} />}
       {showTemplateGallery && (
-<<<<<<< HEAD
-        <TemplateGallery 
-          onClose={closeTemplateGallery} 
-=======
         <TemplateGallery
           onClose={closeTemplateGallery}
->>>>>>> e642b62 (new nodes and flow improvement)
           onSelectTemplate={handleSelectTemplate}
         />
       )}

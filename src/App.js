@@ -6,14 +6,11 @@ import LandingPage from './pages/LandingPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import { ProtectedRoute, GuestRoute } from './ProtectedRoute';
-// import NodeFlowEdit from "./pages/NodeFlowEdit";
 import NodeFlowEditor from './pages/NodeFlowEditor';
 
 function App() {
   return (
-    <>
-      <AuthProvider>
-<<<<<<< HEAD
+    <AuthProvider>
       <Router>
         <Routes>
           <Route 
@@ -48,7 +45,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/webchat/:id"
             element={
               <ProtectedRoute>
@@ -56,73 +53,18 @@ function App() {
               </ProtectedRoute>
             }
           />
-            <Route
-  path="/chat/:id"
-  element={
-    <ProtectedRoute>
-      <NodeFlowEditor />
-    </ProtectedRoute>
-  }
-/>
+          {/* Choose either /webchat/:id or /chat/:id, not both */}
+          <Route
+            path="/chat/:id"
+            element={
+              <ProtectedRoute>
+                <NodeFlowEditor />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
-=======
-        <Router>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <GuestRoute>
-                  <LandingPage />
-                </GuestRoute>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <GuestRoute>
-                  <GettingStarded />
-                </GuestRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <GuestRoute>
-                  <CreateAccount />
-                </GuestRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashbaord />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/webchat/:id"
-              element={
-                <ProtectedRoute>
-                  <NodeFlowEditor />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/chat/:id"
-              element={
-                <ProtectedRoute>
-                  <NodeFlowEditor />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Router>
-      </AuthProvider>
->>>>>>> e642b62 (new nodes and flow improvement)
-    </>
   );
 }
 
