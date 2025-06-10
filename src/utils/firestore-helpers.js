@@ -1,24 +1,24 @@
-import { doc, updateDoc, getDoc } from "firebase/firestore"
-import { db } from "../firebase"
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 // Analyze flow to generate metadata
 export const analyzeFlow = (nodes, edges) => {
   const nodeTypes = nodes.reduce((acc, node) => {
-    acc[node.type] = (acc[node.type] || 0) + 1
-    return acc
-  }, {})
+    acc[node.type] = (acc[node.type] || 0) + 1;
+    return acc;
+  }, {});
 
-  const targetNodeIds = new Set(edges.map((edge) => edge.target))
-  const sourceNodeIds = new Set(edges.map((edge) => edge.source))
+  const targetNodeIds = new Set(edges.map((edge) => edge.target));
+  const sourceNodeIds = new Set(edges.map((edge) => edge.source));
 
-  const startNodes = nodes.filter((node) => !targetNodeIds.has(node.id))
+  const startNodes = nodes.filter((node) => !targetNodeIds.has(node.id));
   const endNodes = nodes.filter(
-    (node) => !sourceNodeIds.has(node.id) || node.type === "endChat"
-  )
+    (node) => !sourceNodeIds.has(node.id) || node.type === 'endChat'
+  );
 
   return {
     hasStartNode: startNodes.length > 0,
-    hasEndNode: endNodes.some((node) => node.type === "endChat"),
+    hasEndNode: endNodes.some((node) => node.type === 'endChat'),
     totalQuestions: nodeTypes.question || 0,
     totalRouters: nodeTypes.router || 0,
     totalConditionals: nodeTypes.conditional || 0,
@@ -29,14 +29,19 @@ export const analyzeFlow = (nodes, edges) => {
     totalApiIntegrations: nodeTypes.apiIntegration || 0,
     totalBroadcasts: nodeTypes.broadcast || 0,
     totalTags: nodeTypes.tag || 0,
-  }
-}
+  };
+};
 
 // Save flow to Firestore
-export const saveFlowToFirestore = async (chatbotId, nodes, edges, additionalData = {}) => {
+export const saveFlowToFirestore = async (
+  chatbotId,
+  nodes,
+  edges,
+  additionalData = {}
+) => {
   try {
-    const now = new Date()
-    const flowMetadata = analyzeFlow(nodes, edges)
+    const now = new Date();
+    const flowMetadata = analyzeFlow(nodes, edges);
 
     const flowData = {
       nodes: nodes.map((node) => ({
@@ -54,11 +59,11 @@ export const saveFlowToFirestore = async (chatbotId, nodes, edges, additionalDat
       nodeCount: nodes.length,
       edgeCount: edges.length,
       flowMetadata,
-    }
+    };
 
-    const docRef = doc(db, "webchat", chatbotId)
-    const docSnap = await getDoc(docRef)
-    const currentData = docSnap.exists() ? docSnap.data() : {}
+    const docRef = doc(db, 'webchat', chatbotId);
+    const docSnap = await getDoc(docRef);
+    const currentData = docSnap.exists() ? docSnap.data() : {};
 
     const updateData = {
       ...currentData,
@@ -66,112 +71,127 @@ export const saveFlowToFirestore = async (chatbotId, nodes, edges, additionalDat
       updatedAt: now,
       version: (currentData.version || 0) + 1,
       ...additionalData,
-    }
+    };
 
-    await updateDoc(docRef, updateData)
+    await updateDoc(docRef, updateData);
 
-    console.log("Flow saved successfully to Firestore:", {
+    console.log('Flow saved successfully to Firestore:', {
       chatbotId,
       nodeCount: nodes.length,
       edgeCount: edges.length,
       flowMetadata,
-    })
+    });
 
-    return true
+    return true;
   } catch (error) {
-    console.error("Error saving flow to Firestore:", error)
-    throw error
+    console.error('Error saving flow to Firestore:', error);
+    throw error;
   }
-}
+};
 
 // Load flow from Firestore
 export const loadFlowFromFirestore = async (chatbotId) => {
   try {
-    const docRef = doc(db, "webchat", chatbotId)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(db, 'webchat', chatbotId);
+    const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const data = docSnap.data()
-      return data.flowData || null
+      const data = docSnap.data();
+      return data.flowData || null;
     }
 
-    return null
+    return null;
   } catch (error) {
-    console.error("Error loading flow from Firestore:", error)
-    throw error
+    console.error('Error loading flow from Firestore:', error);
+    throw error;
   }
-}
+};
 
 // Validate flow before saving
 export const validateFlow = (nodes, edges) => {
-  const errors = []
+  const errors = [];
 
-  const hasTextMessage = nodes.some((node) => node.type === "textMessage")
+  const hasTextMessage = nodes.some((node) => node.type === 'textMessage');
   if (!hasTextMessage) {
-    errors.push("Flow must have at least one Text Message node")
+    errors.push('Flow must have at least one Text Message node');
   }
 
-  const hasEndChat = nodes.some((node) => node.type === "endChat")
+  const hasEndChat = nodes.some((node) => node.type === 'endChat');
   if (!hasEndChat) {
-    errors.push("Flow must have at least one End Chat node")
+    errors.push('Flow must have at least one End Chat node');
   }
 
   if (edges.length === 0 && nodes.length > 1) {
-    errors.push("Flow must have connections between nodes")
+    errors.push('Flow must have connections between nodes');
   }
 
   if (nodes.length > 1) {
     const connectedNodeIds = new Set([
       ...edges.map((edge) => edge.source),
       ...edges.map((edge) => edge.target),
-    ])
+    ]);
 
-    const orphanedNodes = nodes.filter((node) => !connectedNodeIds.has(node.id))
+    const orphanedNodes = nodes.filter(
+      (node) => !connectedNodeIds.has(node.id)
+    );
     if (orphanedNodes.length > 1) {
-      errors.push(`Found ${orphanedNodes.length} disconnected nodes`)
+      errors.push(`Found ${orphanedNodes.length} disconnected nodes`);
     }
   }
 
-  const questionNodes = nodes.filter((node) => node.type === "question")
+  const questionNodes = nodes.filter((node) => node.type === 'question');
   for (const questionNode of questionNodes) {
     if (!questionNode.data.options || questionNode.data.options.length === 0) {
-      errors.push(`Question node "${questionNode.data.label}" must have at least one option`)
+      errors.push(
+        `Question node "${questionNode.data.label}" must have at least one option`
+      );
     }
   }
 
-  const routerNodes = nodes.filter((node) => node.type === "router")
+  const routerNodes = nodes.filter((node) => node.type === 'router');
   for (const routerNode of routerNodes) {
     if (!routerNode.data.routes || routerNode.data.routes.length === 0) {
-      errors.push(`Router node "${routerNode.data.label}" must have at least one route`)
+      errors.push(
+        `Router node "${routerNode.data.label}" must have at least one route`
+      );
     }
   }
 
-  const collectInputNodes = nodes.filter((node) => node.type === "collectInput")
+  const collectInputNodes = nodes.filter(
+    (node) => node.type === 'collectInput'
+  );
   for (const collectInputNode of collectInputNodes) {
-    if (!collectInputNode.data.variable || collectInputNode.data.variable.trim() === "") {
-      errors.push(`Collect Input node "${collectInputNode.data.label}" must have a variable name`)
+    if (
+      !collectInputNode.data.variable ||
+      collectInputNode.data.variable.trim() === ''
+    ) {
+      errors.push(
+        `Collect Input node "${collectInputNode.data.label}" must have a variable name`
+      );
     }
   }
 
-  const apiNodes = nodes.filter((node) => node.type === "apiIntegration")
+  const apiNodes = nodes.filter((node) => node.type === 'apiIntegration');
   for (const apiNode of apiNodes) {
-    if (!apiNode.data.url || apiNode.data.url.trim() === "") {
-      errors.push(`API Integration node "${apiNode.data.label}" must have a URL`)
+    if (!apiNode.data.url || apiNode.data.url.trim() === '') {
+      errors.push(
+        `API Integration node "${apiNode.data.label}" must have a URL`
+      );
     }
   }
 
   return {
     isValid: errors.length === 0,
     errors,
-  }
-}
+  };
+};
 
 // Export flow data for backup/sharing
 export const exportFlowData = (nodes, edges, chatbotInfo) => {
   const flowData = {
     chatbotInfo: {
-      title: chatbotInfo?.title || "Untitled Chatbot",
-      description: chatbotInfo?.description || "",
+      title: chatbotInfo?.title || 'Untitled Chatbot',
+      description: chatbotInfo?.description || '',
       exportedAt: new Date().toISOString(),
     },
     flowData: {
@@ -181,9 +201,9 @@ export const exportFlowData = (nodes, edges, chatbotInfo) => {
       edgeCount: edges.length,
       flowMetadata: analyzeFlow(nodes, edges),
     },
-    version: "1.0",
-    exportedBy: "MyChatClone",
-  }
+    version: '1.0',
+    exportedBy: 'MyChatClone',
+  };
 
-  return JSON.stringify(flowData, null, 2)
-}
+  return JSON.stringify(flowData, null, 2);
+};

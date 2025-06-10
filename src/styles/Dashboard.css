@@ -124,6 +124,7 @@
 
 .stat-value {
   color: #111827;
+<<<<<<< HEAD
   font-size: 2rem;
   font-weight: 700;
   margin: 0.25rem 0;
@@ -142,6 +143,25 @@
   color: #dc2626;
 }
 
+=======
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-change {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-change.positive {
+  color: #059669;
+}
+
+.stat-change.negative {
+  color: #dc2626;
+}
+
+>>>>>>> e642b62 (new nodes and flow improvement)
 .chatbots-section {
   display: flex;
   flex-direction: column;
@@ -211,8 +231,17 @@
 }
 
 @keyframes spin {
+<<<<<<< HEAD
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+=======
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+>>>>>>> e642b62 (new nodes and flow improvement)
 }
 
 .empty-state {
@@ -257,6 +286,10 @@
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
+=======
+  justify-content: space-between;
+>>>>>>> e642b62 (new nodes and flow improvement)
   gap: 1rem;
 }
 
@@ -339,7 +372,11 @@
 }
 
 .stat-item .stat-value {
+<<<<<<< HEAD
   font-size: 1.25rem;
+=======
+  font-size: 1rem;
+>>>>>>> e642b62 (new nodes and flow improvement)
   font-weight: 600;
   color: #111827;
   margin: 0.25rem 0 0 0;
@@ -403,7 +440,11 @@
   .DashPerformanceStat {
     grid-template-columns: repeat(2, 1fr);
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .chatbots-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
@@ -413,12 +454,17 @@
   .DashboardContainer {
     padding: 1rem;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
+<<<<<<< HEAD
   
   .DashPerformanceStat {
     grid-template-columns: 1fr;
@@ -428,11 +474,23 @@
     grid-template-columns: 1fr;
   }
   
+=======
+
+  .DashPerformanceStat {
+    grid-template-columns: 1fr;
+  }
+
+  .chatbots-grid {
+    grid-template-columns: 1fr;
+  }
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
+<<<<<<< HEAD
   
   .chatbot-actions {
     flex-direction: column;
@@ -442,6 +500,17 @@
     flex: none;
   }
   
+=======
+
+  .chatbot-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    flex: none;
+  }
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .empty-actions {
     flex-direction: column;
     width: 100%;
@@ -454,15 +523,149 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .stat-item {
     flex-direction: row;
     justify-content: space-between;
     text-align: left;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e642b62 (new nodes and flow improvement)
   .chatbot-header {
     flex-direction: column;
     align-items: flex-start;
   }
+<<<<<<< HEAD
 }
+=======
+}
+
+/* Existing Dashboard styles */
+
+/* Profile section styles */
+.profile-section {
+  position: relative;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-initial {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 250px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-user-info {
+  padding: 16px;
+  background-color: #f5f5f5;
+}
+
+.dropdown-name {
+  font-weight: bold;
+  margin: 0 0 4px 0;
+}
+
+.dropdown-email {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  word-break: break-all;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-dropdown ul li {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-dropdown ul li:hover {
+  background-color: #f5f5f5;
+}
+
+/* Google button styles for auth pages */
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.auth-divider span {
+  padding: 0 10px;
+  color: #777;
+  font-size: 14px;
+}
+>>>>>>> e642b62 (new nodes and flow improvement)

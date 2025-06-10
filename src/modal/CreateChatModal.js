@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import "../styles/Modal.css";
-import { X } from "lucide-react";
-import { TextField, Button } from "@mui/material";
-import { addDoc, collection } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import React, { useState } from 'react';
+import '../styles/Modal.css';
+import { X } from 'lucide-react';
+import { TextField, Button } from '@mui/material';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 export default function CreateChatModal({ onClose }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("Web Chat");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState('Web Chat');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -16,17 +16,17 @@ export default function CreateChatModal({ onClose }) {
     const user = auth.currentUser;
 
     try {
-      await addDoc(collection(db, "webchat"), {
+      await addDoc(collection(db, 'webchat'), {
         title,
         description,
         userId: user.uid,
         createdAt: new Date(),
       });
-      alert("WebChat created successfully!");
+      alert('WebChat created successfully!');
       onClose();
     } catch (error) {
-      console.error("Error creating WebChat:", error);
-      alert("Failed to create WebChat. Check console.");
+      console.error('Error creating WebChat:', error);
+      alert('Failed to create WebChat. Check console.');
     } finally {
       setLoading(false);
     }
@@ -36,9 +36,9 @@ export default function CreateChatModal({ onClose }) {
     <div className="CreateChatModal">
       <div className="chat-container">
         <div
-          style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}
+          style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}
         >
-          <X onClick={onClose} style={{ cursor: "pointer" }} />
+          <X onClick={onClose} style={{ cursor: 'pointer' }} />
         </div>
         <h1>Create WebChat Bot</h1>
         <TextField
@@ -71,9 +71,9 @@ export default function CreateChatModal({ onClose }) {
           variant="contained"
           onClick={handleSubmit}
           disabled={!title || !description}
-          style={{ marginTop: "1rem" }}
+          style={{ marginTop: '1rem' }}
         >
-          {loading ? "Creating..." : "Create"}
+          {loading ? 'Creating...' : 'Create'}
         </Button>
       </div>
     </div>

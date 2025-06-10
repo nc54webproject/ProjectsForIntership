@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -11,72 +11,72 @@ import {
   Divider,
   Grid,
   Alert,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GoogleIcon from "@mui/icons-material/Google";
-import CircularProgress from "@mui/material/CircularProgress";
-import "../styles/LandingPage.css";
-import { Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { doc, setDoc } from "firebase/firestore";
-import { auth ,db} from "../firebase";
-import { createUserWithEmailAndPassword} from "firebase/auth";
-import Logo from '../images/robot-with-tablet.jpg'
-
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GoogleIcon from '@mui/icons-material/Google';
+import CircularProgress from '@mui/material/CircularProgress';
+import '../styles/LandingPage.css';
+import { Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import Logo from '../images/robot-with-tablet.jpg';
+import { signInWithGoogle } from '../googleAuth';
 
 function CreateAccount() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const navigate = useNavigate();
   const handleSignInClick = () => {
-    navigate("/login");
+    navigate('/login');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setIsLoading(true);
 
     try {
-        await createUserWithEmailAndPassword(auth,email,password);
-        await setDoc(doc(db, "users", auth.currentUser.uid), {
-            uid: auth.currentUser.uid,
-            email: auth.currentUser.email,
-            displayName: `${firstName} ${lastName}`,
-            createdAt: new Date(),
-          });
-        console.log("User Create Successfully")
-        navigate('/dashboard')
-    } catch (err){
-        setError(err.message)
-        console.log(error);
+      await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'users', auth.currentUser.uid), {
+        uid: auth.currentUser.uid,
+        email: auth.currentUser.email,
+        displayName: `${firstName} ${lastName}`,
+        createdAt: new Date(),
+      });
+      console.log('User Create Successfully');
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+      console.log(error);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="GettingStarted">
       <div className="GettingStartedCard LogoCard">
-                <img src={Logo} alt="MyChat" className="LoginImage"/>
+        <img src={Logo} alt="MyChat" className="LoginImage" />
       </div>
       <div className="GettingStartedCard loginCard">
         <h1>MyChat Clone</h1>
-        <Card sx={{ width: 500, pt: 2 }} style={{ boxShadow: "none" }}>
+        <Card sx={{ width: 500, pt: 2 }} style={{ boxShadow: 'none' }}>
           <CardHeader
             title="Sign Up"
             titleTypographyProps={{
-              align: "center",
-              fontWeight: "bold",
+              align: 'center',
+              fontWeight: 'bold',
               fontSize: 24,
-              textTransform:"uppercase"
+              textTransform: 'uppercase',
             }}
           />
           <CardContent>
@@ -125,7 +125,7 @@ function CreateAccount() {
                 fullWidth
                 label="Password"
                 variant="outlined"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 margin="normal"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -149,8 +149,7 @@ function CreateAccount() {
                 alignItems="center"
                 justifyContent="space-between"
                 sx={{ my: 1 }}
-              >
-              </Grid>
+              ></Grid>
 
               <Button
                 fullWidth
@@ -163,7 +162,7 @@ function CreateAccount() {
                 {isLoading ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
-                  "Sign Up"
+                  'Sign Up'
                 )}
               </Button>
 
@@ -175,7 +174,7 @@ function CreateAccount() {
                     fullWidth
                     variant="outlined"
                     startIcon={<GoogleIcon />}
-                    onClick={() => alert("Google Sign In")}
+                    onClick={signInWithGoogle}
                   >
                     Google
                   </Button>
@@ -185,7 +184,7 @@ function CreateAccount() {
                     fullWidth
                     variant="outlined"
                     startIcon={<FacebookIcon />}
-                    onClick={() => alert("Facebook Sign In")}
+                    onClick={() => alert('Facebook Sign In')}
                   >
                     Facebook
                   </Button>
@@ -193,7 +192,7 @@ function CreateAccount() {
               </Grid>
 
               <Typography align="center" variant="body2" sx={{ mt: 2 }}>
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Button size="small" onClick={handleSignInClick}>
                   Sign In
                 </Button>
@@ -217,7 +216,7 @@ function CreateAccount() {
           </span>
           <span>
             <Check color="green" /> Visual flow builder with drag & drop
-          </span>{" "}
+          </span>{' '}
           <span>
             <Check color="green" /> Cloud storage and collaboration
           </span>
