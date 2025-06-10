@@ -15,6 +15,7 @@ export const ChatWidget = ({
   const [currentNodeId, setCurrentNodeId] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [chatEnded, setChatEnded] = useState(false);
+  // eslint-disable-next-line 
   const [userVariables, setUserVariables] = useState({});
   const [isMinimized, setIsMinimized] = useState(false);
   const [waitingForInput, setWaitingForInput] = useState(false);
@@ -51,8 +52,8 @@ export const ChatWidget = ({
       setIsTyping(false);
       processNode(currentNode);
     }, 1000);
-
     return () => clearTimeout(timer);
+    // eslint-disable-next-line 
   }, [currentNodeId, nodes, edges, chatEnded, waitingForInput]);
 
   // Auto-scroll to bottom

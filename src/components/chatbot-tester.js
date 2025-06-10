@@ -68,6 +68,7 @@ export const ChatbotTester = ({ nodes, edges, onClose }) => {
     }, 1000);
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line 
   }, [currentNodeId, nodes, edges, chatEnded, waitingForInput]);
 >>>>>>> e642b62 (new nodes and flow improvement)
 
