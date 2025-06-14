@@ -13,7 +13,7 @@ function DashboardHeader() {
   return (
     <div className='DashboardHeader'>
         <h1 style={{fontSize:"24px"}}>MyChatClone</h1>
-        <LogOut style={{cursor:"pointer"}} onClick={handleLogout}/>
+        <LogOut style={{cursor:"pointer",color:'red'}} onClick={handleLogout}/>
     </div>
   )
 }

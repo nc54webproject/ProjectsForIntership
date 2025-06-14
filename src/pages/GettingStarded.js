@@ -15,7 +15,6 @@ import {
   Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import CircularProgress from '@mui/material/CircularProgress';
 import '../styles/LandingPage.css';
@@ -165,16 +164,6 @@ function GettingStarded() {
                     onClick={signInWithGoogle}
                   >
                     Google
-                  </Button>
-                </Grid>
-                <Grid item xs={6} flex={1}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    startIcon={<FacebookIcon />}
-                    onClick={() => alert('Facebook Sign In')}
-                  >
-                    Facebook
                   </Button>
                 </Grid>
               </Grid>
